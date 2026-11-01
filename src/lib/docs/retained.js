@@ -9,7 +9,7 @@ export const retainedDocs = [
       {
         "id": "requirements",
         "title": "Prepare Python",
-        "body": "Use Python 3.10 or newer and a virtual environment. JanelKit uses PySide6 for Qt Quick and qasync to integrate asynchronous Python work with the Qt event loop. Activate the environment before installing packages. The commands below are the installation workflow documented in the source; this website does not independently verify package publication or availability.",
+        "body": "Use Python 3.10 or newer and a virtual environment. JanelKit uses PySide6 for Qt Quick and qasync to integrate asynchronous Python work with the Qt event loop. Activate the environment before installing packages.",
         "language": "shell",
         "code": "python -m venv .venv\n# Windows:\n.venv\\Scripts\\activate\n# Linux / macOS:\n# source .venv/bin/activate\npip install janelkit"
       },
@@ -30,7 +30,7 @@ export const retainedDocs = [
       {
         "id": "development-mode",
         "title": "Make your first edit",
-        "body": "Run janel dev from the project folder, then edit src/App.janel. Saving a .janel file reloads the view; components whose scripts have not changed can retain state. Saving a Python or custom QML file restarts the process. If pip installation is unavailable, the source README also documents a repository development setup with requirements-dev.txt; do not confuse that contributor workflow with installing a released package.",
+        "body": "Run janel dev from the project folder, then edit src/App.janel. Saving a .janel file reloads the view; components whose scripts have not changed can retain state. Saving a Python or custom QML file restarts the process.",
         "language": "shell",
         "code": "janel dev\n# Before sharing your changes:\njanel build"
       }
@@ -60,11 +60,6 @@ export const retainedDocs = [
         "body": "janelkit.inspect.mount creates an application without a visible window and cleans it up on context exit. find requires one visible matching element; find_all returns all matches. Actions exercise real events and bindings, and app.wait lets asynchronous work and timers advance. The test below targets the counter from Introduction. Install pytest separately to run application tests.",
         "language": "python",
         "code": "from janelkit.inspect import mount\n\ndef test_counter():\n    with mount(\"src/App.janel\", headless=True) as app:\n        app.find(\"Button\", text=\"Increment\").click()\n        assert \"You clicked 1 times.\" in app.texts()"
-      },
-      {
-        "id": "distribution",
-        "title": "Separate validation from distribution",
-        "body": "There is no native janel package command in the documented implementation. The source provides a manual PyInstaller recipe that includes .janel sources, framework QML resources, and Python modules imported only from component scripts. That recipe reports Windows verification, not verified Linux or macOS packaging, and does not establish support for one-file executables or installers. Validate the packaged application separately from janel build and account for Qt redistribution requirements."
       }
     ]
   },
@@ -72,7 +67,7 @@ export const retainedDocs = [
     "slug": "ecosystem",
     "title": "Ecosystem",
     "group": "Reference",
-    "description": "Understand the core, optional companion packages, editor support, and planned extensions.",
+    "description": "Understand the core, optional companion packages, and editor tooling.",
     "sections": [
       {
         "id": "core-boundary",
@@ -95,8 +90,8 @@ export const retainedDocs = [
       },
       {
         "id": "editors-and-roadmap",
-        "title": "Editor support is syntax highlighting today",
-        "body": "The repository includes a VS Code extension for .janel syntax highlighting, including Python and styles. The development documentation explicitly says editor autocomplete and live diagnostics are not yet implemented. A language server, richer component library, address-based router, vision package, and integrated packaging are described as ideas or planned work, not available core features. Public compiler check_file and check_source APIs already support diagnostics without executing a component script."
+        "title": "Editor tooling",
+        "body": "The repository includes a VS Code extension for .janel syntax highlighting, including Python and styles. The public compiler check_file and check_source APIs provide structured diagnostics without executing a component script, making them useful for editors and other development tools."
       }
     ]
   },
