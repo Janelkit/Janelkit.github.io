@@ -20,6 +20,19 @@ npm run preview
 
 `build/` is a fully prerendered static site. Deploy it on a static host supporting directory indexes. No Python server is required. To install test browsers: `npx playwright install chromium`.
 
+## GitHub Pages
+
+The only publishing workflow is `.github/workflows/deploy.yml`. On each push to
+`main` (or a manual run from Actions), it installs the locked dependencies, checks
+SvelteKit and the documentation content, builds the static site, and deploys
+`build/` to GitHub Pages. It does not build the README with Jekyll.
+
+In the repository's **Settings → Pages → Build and deployment**, select
+**GitHub Actions** as the source. This repository is the account site
+`Janelkit.github.io`, so it is served at the domain root without a repository
+base path. Changes must be committed and pushed to `main` before the workflow
+can publish them.
+
 ## Documentation checks
 
 `npm run test:content` checks the lesson schema, required teaching blocks, and coverage of the 47 top-level public names captured from JanelKit 0.1.0. `npm test` also runs the browser suite.

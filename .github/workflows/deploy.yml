@@ -33,11 +33,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check SvelteKit
+        run: npm run check
+
+      - name: Test documentation content
+        run: npm run test:content
+
       - name: Build SvelteKit
         run: npm run build
 
       - name: Verify output
-        run: test -f build/index.html
+        run: |
+          test -f build/index.html
+          test -d build/_app/immutable
+          test -f build/llms.txt
+          test -f build/llms-full.txt
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
