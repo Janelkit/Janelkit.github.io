@@ -1,0 +1,60 @@
+# Dependencies and generated website output
+/node_modules/
+/.svelte-kit/
+/build/
+/dist/
+/.vite/
+/.cache/
+
+# Test output, screenshots, local reports, and generated examples
+/test-results/
+/playwright-report/
+/coverage/
+/.nyc_output/
+/artifacts/
+
+# Internal planning, provenance, design notes, and agent instructions
+/IDEA.md
+/QUALITY.md
+/CONTENT_SOURCES.md
+/DESIGN.md
+/DOCUMENTATION_GUIDELINES.md
+AGENTS.md
+AGENTS.local.md
+CLAUDE.md
+CLAUDE.local.md
+GEMINI.md
+/.agent/
+/.agents/
+/.claude/
+/.codex/
+/.cursor/
+/.hermes/
+/.cursorrules
+/.windsurfrules
+/.aider*
+
+# Local Python helpers used to validate the separate JanelKit framework
+/scripts/validate_doc_examples.py
+/scripts/test_doc_behaviors.py
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local secrets (keep shareable environment templates)
+.env*
+!.env.example
+!.env.*.example
+*.local
+
+# Editor, OS, and debug files
+/.vscode/
+/.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+*.tsbuildinfo

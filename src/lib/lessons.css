@@ -1,0 +1,37 @@
+/* Learning surfaces extend the existing brand, not a new theme. */
+.docs-sidebar{max-height:calc(100dvh - 150px);display:flex;flex-direction:column;min-height:0}
+.docs-navigation{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent;padding-right:8px;min-height:0}
+.docs-search{flex-shrink:0}
+.doc-toc{max-height:calc(100dvh - 165px);overflow-y:auto;scrollbar-width:thin;padding-right:10px}
+.doc-reading-meta{display:flex;flex-wrap:wrap;gap:12px 24px;font:9px/1.6 'Cascadia Code','Consolas',monospace;color:var(--faint);border-block:1px solid var(--line);padding-block:13px;margin:0 0 28px}
+.learning-path{margin:0 0 30px;padding:24px;background:var(--surface);border:1px solid var(--line-strong);border-radius:3px}
+.learning-path h2{font-size:22px;margin:0 0 14px;letter-spacing:-.5px}
+.learning-path>p{font-size:13px}
+.learning-path ol{padding-left:22px;margin:20px 0 0;display:grid;gap:17px}
+.learning-path li{padding-left:5px;color:var(--pink);font-size:13px}
+.learning-path li a{color:var(--text);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:4px}
+.learning-path li a:hover{color:var(--pink)}
+.learning-path li span{display:block;font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6}
+.section-title-link>span{opacity:0;color:var(--pink);font-size:18px}
+.section-title-link:hover>span,.section-title-link:focus-visible>span{opacity:1}
+.doc-section{padding-bottom:15px;margin-bottom:36px;border-bottom:1px solid var(--line)}
+.doc-section:last-of-type{border-bottom:0}
+.doc-section h3{font-size:15px;font-weight:500;letter-spacing:-.2px;margin:24px 0 12px}
+.lesson-steps,.lesson-explanation ol,.lesson-pitfalls ul{font-size:13px;line-height:1.9;color:var(--muted);padding-left:24px;margin:14px 0 22px}
+.lesson-steps li,.lesson-explanation li,.lesson-pitfalls li{padding-left:5px;margin-bottom:12px;white-space:pre-line}
+.lesson-explanation li::marker{color:var(--cyan);font:11px monospace}
+.lesson-explanation h3{color:var(--text)}
+.lesson-expected{padding:18px 20px;border:1px solid var(--line-strong);border-radius:3px;background:var(--surface);margin:22px 0}
+.lesson-expected h3{font:9px/1.6 'Cascadia Code','Consolas',monospace;text-transform:uppercase;letter-spacing:1.1px;color:var(--cyan);margin:0 0 9px}
+.lesson-expected p{font-size:13px;margin-bottom:0}
+.lesson-pitfalls h3{color:var(--lime)}
+.example-scope{font:9px/1.7 'Cascadia Code','Consolas',monospace!important;margin:9px 0 20px!important;color:var(--faint)}
+.doc-table-wrapper{overflow-x:auto;border:1px solid var(--line-strong);border-radius:3px;margin:22px 0;max-width:100%;scrollbar-width:thin}
+.doc-table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.8;text-align:left;min-width:430px}
+.doc-table th{background:var(--surface-raised);font-size:10px;letter-spacing:.3px;color:var(--text);padding:12px 14px;border-bottom:1px solid var(--line-strong);font-weight:500}
+.doc-table td{padding:13px 14px;vertical-align:top;border-bottom:1px solid var(--line);color:var(--muted);overflow-wrap:anywhere;min-width:115px;white-space:pre-line}
+.doc-table tr:last-child td{border-bottom:0}
+.doc-table td:first-child{color:var(--code-text);font-family:'Cascadia Code','Consolas',monospace;font-size:11px}
+.docs-agent-link{font-size:10px;margin:20px 0 0;color:var(--muted);padding-block:5px;border-top:1px solid var(--line)}
+@media(min-width:1101px){.docs-layout{grid-template-columns:225px minmax(0,740px) 170px;gap:36px}}
+@media(max-width:760px){.docs-sidebar{max-height:none}.docs-navigation{max-height:210px;padding:5px 10px}.doc-reading-meta{font-size:8px;gap:7px}.learning-path{padding:20px}.learning-path h2{font-size:21px}.learning-path li a{display:inline-block;min-height:30px;padding-block:5px}.lesson-expected{padding:16px}.lesson-explanation ol,.lesson-pitfalls ul,.lesson-steps{font-size:13px}.doc-section{padding-bottom:12px}.docs-agent-link{display:inline-block;min-height:36px;margin-top:12px}.doc-table{font-size:11px}.doc-table td{padding:12px}}

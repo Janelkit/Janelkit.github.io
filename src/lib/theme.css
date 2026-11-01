@@ -1,0 +1,42 @@
+/* Decadent Cyberpunk: semantic tokens for both website themes.
+   Edit these values to recolor all pages. --ink is text placed on accents. */
+:root {
+  color-scheme: dark;
+  --bg: #0c0c10;
+  --surface: #121217;
+  --surface-raised: #19191f;
+  --text: #f1eee9;
+  --muted: #a4a1ab;
+  --faint: #85818e;
+  --line: #24232c;
+  --line-strong: #34323e;
+  --pink: #ff87b5;
+  --pink-hover: #ffabc9;
+  --pink-subtle: #2b1a25;
+  --cyan: #81e4de;
+  --lime: #d7ec85;
+  --ink: #171018;
+  --code-bg: #0e0e13;
+  --code-text: #d1c7d7;
+  --grid-line: #183330;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fdfbf8;
+  --surface: #f6f3f0;
+  --surface-raised: #ede7eb;
+  --text: #211c29;
+  --muted: #625d69;
+  --faint: #696470;
+  --line: #e5dfe5;
+  --line-strong: #cec5d0;
+  --pink: #b32762;
+  --pink-hover: #94184d;
+  --pink-subtle: #fbe5ef;
+  --cyan: #08756f;
+  --lime: #596b1b;
+  --ink: #ffffff;
+  --code-bg: #f0edf3;
+  --code-text: #3b304a;
+  --grid-line: #cee4df;
+}
