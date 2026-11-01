@@ -18,6 +18,14 @@
   --ink: #171018;
   --code-bg: #0e0e13;
   --code-text: #d1c7d7;
+  --syntax-comment: #a4a1ab;
+  --syntax-keyword: #ff87b5;
+  --syntax-string: #d7ec85;
+  --syntax-number: #eab77d;
+  --syntax-function: #c7a7ef;
+  --syntax-tag: #81e4de;
+  --syntax-attribute: #a6c8ff;
+  --syntax-punctuation: #a4a1ab;
   --grid-line: #183330;
 }
 :root[data-theme="light"] {
@@ -38,5 +46,13 @@
   --ink: #ffffff;
   --code-bg: #f0edf3;
   --code-text: #3b304a;
+  --syntax-comment: #625d69;
+  --syntax-keyword: #a51f59;
+  --syntax-string: #4f6418;
+  --syntax-number: #8c4b0d;
+  --syntax-function: #7541a4;
+  --syntax-tag: #086c66;
+  --syntax-attribute: #315b99;
+  --syntax-punctuation: #625d69;
   --grid-line: #cee4df;
 }
