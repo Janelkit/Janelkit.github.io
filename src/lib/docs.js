@@ -12,7 +12,7 @@ import { fundamentalsDocs } from './docs/fundamentals.js';
 import { advancedDocs } from './docs/advanced.js';
 import { internalsDocs } from './docs/internals.js';
 import { stateDocs } from './docs/state.js';
-import { runtimeDocs } from './docs/runtime.js';
+import { buildingDocs } from './docs/building.js';
 import { interfaceDocs } from './docs/interface.js';
 import { practiceDocs } from './docs/practice.js';
 import { retainedDocs } from './docs/retained.js';
@@ -26,7 +26,7 @@ export const zones = [
     parts: [
       { title: 'Start', slugs: ['introduction', 'installation', 'first-app', 'anatomy'] },
       { title: 'Fundamentals', slugs: ['elements', 'state', 'expressions', 'events', 'forms', 'conditions-and-lists', 'computed', 'layout', 'styles'] },
-      { title: 'Building applications', slugs: ['components', 'lifecycle', 'context-refs', 'navigation', 'async', 'persistence'] },
+      { title: 'Building applications', slugs: ['components', 'lifecycle', 'sharing-data', 'refs', 'navigation', 'async', 'timers', 'persistence'] },
       { title: 'Advanced interface', slugs: ['accessibility', 'large-lists', 'reactivity-in-depth'] },
       { title: 'Quality and delivery', slugs: ['testing', 'troubleshooting', 'cli'] },
       { title: 'Under the hood', slugs: ['how-it-works'] }
@@ -52,7 +52,7 @@ export const zones = [
   }
 ];
 
-const catalog = [...startDocs, ...fundamentalsDocs, ...advancedDocs, ...internalsDocs, ...stateDocs, ...runtimeDocs, ...interfaceDocs, ...practiceDocs, ...retainedDocs, ...packageDocs];
+const catalog = [...startDocs, ...fundamentalsDocs, ...advancedDocs, ...internalsDocs, ...stateDocs, ...buildingDocs, ...interfaceDocs, ...practiceDocs, ...retainedDocs, ...packageDocs];
 if (new Set(catalog.map(doc => doc.slug)).size !== catalog.length) throw new Error('Duplicate documentation slug');
 
 export const docs = zones.flatMap(zone => zone.parts.flatMap(part => part.slugs.map(slug => {
@@ -76,7 +76,8 @@ export function hrefFor(slug) {
 // that were renamed when their content was reorganized.
 const renamed = {
   ecosystem: 'overview', controls: 'elements', 'template-syntax': 'expressions', reactivity: 'state',
-  'control-flow': 'conditions-and-lists', 'computed-effects': 'computed', styling: 'styles'
+  'control-flow': 'conditions-and-lists', 'computed-effects': 'computed', styling: 'styles',
+  'context-refs': 'sharing-data'
 };
 export const legacySlugs = [
   'introduction', 'installation', 'how-it-works', 'first-app', 'glossary',

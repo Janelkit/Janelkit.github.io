@@ -1,66 +1,6 @@
 // Source: local JanelKit docs/api.md, docs/lenguaje.md and public implementations.
 export const stateDocs = [
   {
-    slug: 'persistence', title: 'Persistence and history', group: 'Reactivity',
-    description: 'Remember small JSON values across launches and record deliberate undoable edits.',
-    sections: [
-      {
-        id: 'persisted-basics', title: 'Remember a value between application sessions',
-        body: 'Normal state starts again on relaunch. persisted(key, initial) loads saved JSON, falling back to initial without a readable valid file. Use it like State, including bindings and nested collection edits.\n\nThe same key returns the same object across the application process; a second default is ignored, not a reset. Assign a replacement explicitly to reset. Choose namespaced keys. This shared object provides neither cross-process synchronization nor database locking.',
-        explanation: ['Persistence is about surviving a later launch, while reactivity is about updating the current interface.', 'An application-wide preference does not become component-local merely because persisted is called inside a component script.'],
-        pitfalls: ['Do not use one key for unrelated schemas; the first object and any loaded data win.', 'Do not use persisted for secrets: these are ordinary JSON files, not encrypted credential storage.']
-      },
-      {
-        id: 'preferences-example', title: 'A complete preference editor',
-        body: 'Running this complete component can write preferences to disk. For isolation, use a disposable project and set JANELKIT_DATA_DIR to a disposable directory before launching. Replace src/App.janel and run python main.py. Changing a value schedules saving; merely displaying its default does not.',
-        code: `<script lang="python">
-from janelkit import persisted
-name = persisted("lesson.name", "")
-</script>
-
-<Column padding={24} gap={12}>
-  <TextField bind:value={name} placeholder="Your name" label="Your name" />
-  <Text>Hello, {name or "visitor"}.</Text>
-  <Button on:click={name = ""}>Clear preference</Button>
-</Column>`, language: 'janel', standalone: true,
-        expected: 'Typing Ada updates the greeting immediately. After a normal close and relaunch with the same data directory, the field still contains Ada. Clear preference saves an empty string, rather than deleting the storage key.'
-      },
-      {
-        id: 'json-and-keys', title: 'Design JSON-shaped data and valid keys',
-        body: 'Use strings, numbers, booleans, None, lists, and string-keyed dictionaries. Convert dates, Paths, custom objects, and sets explicitly. Tuples reload as lists; numeric dictionary keys can become strings. Circular structures cannot serialize.\n\nPython JSON serialization is not schema validation. Unsupported values can raise TypeError during creation or change notification; rejected in-place changes are not necessarily rolled back. Validate replacement data first. Loaded JSON is not checked against the new default’s type: migrate changed schemas yourself or use a new key.\n\nKeys start with an ASCII letter or digit, followed by ASCII letters, digits, dots, underscores, or hyphens. prefs.theme is valid; ../theme, slashes, spaces, and leading underscores are invalid and raise ValueError.'
-      },
-      {
-        id: 'storage-lifecycle', title: 'Understand storage location and write timing',
-        body: 'Each key maps to <data directory>/<key>.json. JANELKIT_DATA_DIR overrides the directory; otherwise the project name sits under APPDATA on Windows, Library/Application Support on macOS, or XDG_CONFIG_HOME / .config on Linux. Persisted.file is its Path; .key is its identifier.\n\nQt groups changes with a 300 millisecond timer and flushes pending values at shutdown. Without Qt running, changes can flush immediately. flush() writes pending data and returns None, but does not create an unchanged default’s file. Temporary-file replacement avoids partial JSON replacement; it is not database durability or conflict resolution. I/O failures are logged, not successful-save receipts.\n\nEach saved update rewrites the key’s complete JSON: use small preferences, not large documents or databases. Inspection mounts use temporary storage unless JANELKIT_DATA_DIR overrides isolation.'
-      },
-      {
-        id: 'history-example', title: 'Make deliberate changes undoable',
-        body: 'History is an in-memory undo journal, not persistence. with history.step(label): records State assignments and reactive list, dictionary, and set mutations as one named user action. Changes outside a step are not recorded. Keep cursor movement and incidental status messages outside document-edit steps. The following complete component needs no saved data and can be tried independently.',
-        code: `<script lang="python">
-from janelkit import History, state
-count = state(0)
-history = History(limit=100)
-
-def add():
-    with history.step("Add one"):
-        count.value += 1
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Count: {count}; modified: {history.modified}</Text>
-  <Button on:click={add}>Add one</Button>
-  <Button enabled={history.can_undo} on:click={history.undo()}>Undo</Button>
-  <Button enabled={history.can_redo} on:click={history.redo()}>Redo</Button>
-</Column>`, language: 'janel', standalone: true,
-        expected: 'Add one changes the count to 1 and modified to True. Undo returns to 0 and modified False; Redo returns to 1. undo() and redo() return the step label, or None when there is no available step.'
-      },
-      {
-        id: 'history-boundaries', title: 'History limits, saved markers, and custom actions',
-        body: 'Steps shallowly snapshot touched collections, recording nested dictionaries separately when changed. Undo/redo retain collection objects and notify in a batch. Nested steps merge; unchanged results are omitted. A new edit discards redo; limit bounds retained steps.\n\ncan_undo, can_redo, undo_label, redo_label, and modified are reactive. mark_saved() marks the current position without writing a file; undoing back makes modified False. clear() forgets steps without resetting modified. Establish a newly loaded document baseline with clear and mark_saved.\n\nadd(label, undo=fn, redo=fn) records callbacks for an already performed unobservable action; it does not run redo immediately. You own correctness and external consequences. step is not rollback-on-error; do not hold it across await. Custom mutations are not automatically captured. Undoing persisted data can schedule a save, but the journal itself does not survive relaunch.'
-      }
-    ]
-  },
-  {
     slug: 'python-api', title: 'Python API reference', group: 'Reference',
     description: 'Every public top-level export, its purpose and boundaries, plus the supported tooling modules.',
     sections: [

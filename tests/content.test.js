@@ -15,7 +15,7 @@ test('Python reference documents every public top-level name from JanelKit 0.1.0
 });
 
 test('the learning path teaches from no framework experience to lifecycle and public APIs', () => {
-  for (const slug of ['introduction','installation','first-app','anatomy','elements','state','expressions','events','forms','conditions-and-lists','computed','layout','styles','components','lifecycle','context-refs','navigation','async','persistence','accessibility','large-lists','reactivity-in-depth','how-it-works','python-api']) {
+  for (const slug of ['introduction','installation','first-app','anatomy','elements','state','expressions','events','forms','conditions-and-lists','computed','layout','styles','components','lifecycle','sharing-data','refs','navigation','async','timers','persistence','accessibility','large-lists','reactivity-in-depth','how-it-works','python-api']) {
     assert.ok(docs.find(doc=>doc.slug===slug), `Missing guide: ${slug}`);
   }
 });
@@ -30,7 +30,7 @@ test('lessons explain examples, results and common mistakes instead of just list
 });
 
 test('rewritten chapters open with goals and close with key points', () => {
-  for (const doc of zoneDocs('guide').filter(doc => ['Start', 'Fundamentals', 'Advanced interface', 'Under the hood'].includes(doc.group))) {
+  for (const doc of zoneDocs('guide').filter(doc => ['Start', 'Fundamentals', 'Building applications', 'Advanced interface', 'Under the hood'].includes(doc.group))) {
     assert.ok(doc.learn?.length >= 2 && doc.learn.length <= 5, `${doc.slug} needs 2–5 learning goals`);
     assert.ok(doc.summary?.length >= 2 && doc.summary.length <= 4, `${doc.slug} needs 2–4 key points`);
   }
@@ -53,16 +53,25 @@ test('every page and section has a unique identifier and valid teaching blocks',
       assert.ok(s.body && s.title && s.id,`${doc.slug}/${s.id}`);
       for(const key of ['explanation','steps','pitfalls']) if(s[key]) assert.ok(Array.isArray(s[key]) && s[key].every(v=>typeof v==='string'));
       if(s.table) assert.ok(s.table.headers.length && s.table.rows.every(row=>row.length===s.table.headers.length));
+      if(s.files) {
+        assert.ok(!s.code, `${doc.slug}/${s.id}: use either code or files`);
+        assert.ok(s.files.every(f => f.path && f.code), `${doc.slug}/${s.id}: every file needs a path and code`);
+        assert.equal(new Set(s.files.map(f => f.path)).size, s.files.length, `${doc.slug}/${s.id}: duplicate file path`);
+      }
     }
   }
 });
 
 test('highlighting preserves every documented example verbatim', () => {
   for (const doc of docs) {
-    for (const section of doc.sections.filter(section => section.code)) {
-      const tokens = highlightCode(section.code, section.language);
-      assert.equal(tokens.map(token => token.content).join(''), section.code, `${doc.slug}/${section.id}`);
-      assert.ok(tokens.some(token => token.color), `No highlighting: ${doc.slug}/${section.id}`);
+    const blocks = doc.sections.flatMap(section => [
+      ...(section.code ? [{ code: section.code, language: section.language, where: section.id }] : []),
+      ...(section.files || []).map(file => ({ code: file.code, language: file.language || 'janel', where: `${section.id}:${file.path}` }))
+    ]);
+    for (const block of blocks) {
+      const tokens = highlightCode(block.code, block.language);
+      assert.equal(tokens.map(token => token.content).join(''), block.code, `${doc.slug}/${block.where}`);
+      assert.ok(tokens.some(token => token.color), `No highlighting: ${doc.slug}/${block.where}`);
     }
   }
   for (const source of ['', '\n', 'a\r\nb\r\n', 'á\t<&>\n', '<script>alert("not HTML")</script>']) {

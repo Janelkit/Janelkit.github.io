@@ -10,6 +10,7 @@ export function docToText(doc) {
     if (section.steps) lines.push(...section.steps.map((s,i) => `${i+1}. ${s}`), '');
     if (section.table) lines.push(section.table.headers.join(' | '), ...section.table.rows.map(row => row.join(' | ')), '');
     if (section.code) lines.push('```' + (section.language || ''), section.code, '```', '');
+    for (const file of section.files || []) lines.push(`File: ${file.path}`, '```' + (file.language || 'janel'), file.code, '```', '');
     if (section.explanation) lines.push('### How it works', ...section.explanation.map((s,i) => `${i+1}. ${s}`), '');
     if (section.expected) lines.push('### What you should see', section.expected, '');
     if (section.pitfalls) lines.push('### Common mistakes', ...section.pitfalls.map(s => '- ' + s), '');

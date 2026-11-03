@@ -163,7 +163,7 @@ rows = state([{"id": n, "title": f"Item {n}"} for n in range(1, 2001)])
   {/each}
 </List>
 <Button on:click={feed.scroll_to_end()} enabled={not at_bottom}>Jump to latest</Button>`,
-        see: ['context-refs']
+        see: ['refs']
       },
       {
         id: 'changes',
