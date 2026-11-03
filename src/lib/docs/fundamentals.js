@@ -1091,12 +1091,13 @@ from janelkit import theme
       {
         id: 'limits',
         title: 'Stay inside the supported subset',
-        body: 'Supported: colors and backgrounds, borders per side and radii per corner, padding and margin, gap, the flexbox properties, fonts and text properties, opacity, transform, box-shadow, outline, cursor, overflow, position (relative, absolute, fixed) with z-index, and transitions of color, background, border color, opacity, size, radius and transform. Not supported yet, with a warning: display: grid, position: sticky, em and rem units, and @keyframes animations.\n\nText properties such as color and font-size set on a box are inherited by the Text elements inside it, even inside child components. A box can also define its own variables, --accent: var(--primary), read with var(--accent) by what it contains.',
+        body: 'Supported: colors and backgrounds, borders per side and radii per corner, padding and margin, gap, the flexbox properties, fonts and text properties, opacity, transform, box-shadow, outline, cursor, overflow, position (relative, absolute, fixed) with z-index, and transitions of color, background, border color, opacity, size, radius and transform. An unsupported property or value produces a warning and is ignored; an unsupported selector or an at-rule such as @media or @keyframes is a compile error. The Style reference lists every property, value and element.\n\nText properties such as color and font-size set on a box are inherited by the Text elements inside it, even inside child components. A box can also define its own variables, --accent: var(--primary), read with var(--accent) by what it contains.',
         pitfalls: [
           'Eight-digit hex colors are #aarrggbb (alpha first), not the browser’s #rrggbbaa.',
+          'A misspelled color name such as blu compiles, but the application then refuses to start. Prefer theme tokens over color names.',
           'Do not remove focus outlines to make screenshots cleaner; visible focus is how keyboard users find their place.'
         ],
-        see: ['accessibility']
+        see: ['style-reference', 'accessibility']
       }
     ],
     summary: [

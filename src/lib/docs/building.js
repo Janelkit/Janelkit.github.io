@@ -188,7 +188,7 @@ message = state("Ready")
         ],
         expected: 'The first card shows Ready and a Finish button; the second shows No actions. Finish changes Ready to Done.',
         pitfalls: [
-          'Passing content to a slot name the child does not declare is a compile error: <Card> no admite el slot \'header\' ("does not accept the slot"). Check the slot names in the child.',
+          'Passing content to a slot name the child does not declare is a compile error: <Card> no admite el slot \'header\' ("does not accept the slot"), followed by a hint that lists the slots the child declares.',
           'Filling one named slot twice is also a compile error. Wrap several elements for one slot in a Row or Column with that slot attribute.'
         ]
       },

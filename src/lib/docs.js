@@ -17,6 +17,7 @@ import { interfaceDocs } from './docs/interface.js';
 import { practiceDocs } from './docs/practice.js';
 import { retainedDocs } from './docs/retained.js';
 import { packageDocs } from './docs/packages.js';
+import { styleReferenceDocs } from './docs/style-reference.js';
 import { origins } from './origins.js';
 
 export const zones = [
@@ -37,6 +38,7 @@ export const zones = [
     description: 'Exact signatures, behavior and vocabulary. Look things up here; learn them in the Guide.',
     parts: [
       { title: 'Python API', origin: 'core', slugs: ['python-api'] },
+      { title: 'Styles', origin: 'core', slugs: ['style-reference'] },
       { title: 'Vocabulary', slugs: ['glossary'] },
       { title: 'Working with AI', slugs: ['ai-agents'] }
     ]
@@ -52,7 +54,7 @@ export const zones = [
   }
 ];
 
-const catalog = [...startDocs, ...fundamentalsDocs, ...advancedDocs, ...internalsDocs, ...stateDocs, ...buildingDocs, ...interfaceDocs, ...practiceDocs, ...retainedDocs, ...packageDocs];
+const catalog = [...startDocs, ...fundamentalsDocs, ...advancedDocs, ...internalsDocs, ...stateDocs, ...buildingDocs, ...interfaceDocs, ...practiceDocs, ...retainedDocs, ...packageDocs, ...styleReferenceDocs];
 if (new Set(catalog.map(doc => doc.slug)).size !== catalog.length) throw new Error('Duplicate documentation slug');
 
 export const docs = zones.flatMap(zone => zone.parts.flatMap(part => part.slugs.map(slug => {

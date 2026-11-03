@@ -143,6 +143,33 @@ test('package pages cover every public name their package exports', () => {
   }
 });
 
+test('the style reference lists every property, pseudo-class and inline property the framework accepts', () => {
+  const src = new URL('../../Janelkit/packages/janelkit/src/janelkit/', import.meta.url);
+  let compiler, parser, lowering;
+  try {
+    compiler = readFileSync(new URL('styling/compiler.py', src), 'utf8');
+    parser = readFileSync(new URL('styling/parser.py', src), 'utf8');
+    lowering = readFileSync(new URL('compiler/lowering.py', src), 'utf8');
+  } catch { return; } // The framework checkout is optional when building the site alone.
+  const sides = ['top', 'right', 'bottom', 'left'];
+  const block = (text, start) => text.slice(text.indexOf(start), text.indexOf('\n}', text.indexOf(start)));
+  const supported = block(compiler, 'SUPPORTED: dict');
+  const properties = [
+    ...[...supported.matchAll(/^\s+"([a-z-]+)":/gm)].map(m => m[1]),
+    ...[...supported.matchAll(/f"([a-z-]*)\{side\}([a-z-]*)"/g)].flatMap(m => sides.map(side => m[1] + side + m[2]))
+  ];
+  const pseudos = parser.match(/PSEUDO_CLASSES = \(([^)]*)\)/)[1].match(/"([^"]+)"/g).map(p => p.slice(1, -1));
+  const inline = [...block(lowering, '_INLINE = {').matchAll(/^\s+"([a-z-]+)":/gm)].map(m => m[1]);
+  assert.ok(properties.length >= 80 && pseudos.length >= 13 && inline.length >= 17, 'Could not read the framework tables');
+  const page = docs.find(doc => doc.slug === 'style-reference');
+  const sectionText = id => JSON.stringify(page.sections.find(s => s.id === id));
+  const all = JSON.stringify(page);
+  const word = name => new RegExp(`(^|[^a-z-])${name.replace(/[-]/g, '\\-')}([^a-z-]|$)`);
+  for (const property of properties) assert.ok(word(property).test(all), `Style reference is missing the property ${property}`);
+  for (const pseudo of pseudos) assert.ok(sectionText('pseudo-classes').includes(`:${pseudo}`), `Style reference is missing :${pseudo}`);
+  for (const name of inline) assert.ok(word(name).test(sectionText('inline-style')), `Inline style section is missing ${name}`);
+});
+
 test('every published /docs/ address redirects to an existing page', () => {
   assert.equal(legacySlugs.length, 24);
   for (const slug of legacySlugs) assert.ok(docs.some(doc => doc.href === legacyRedirects[slug]), slug);
