@@ -34,11 +34,11 @@ for (const theme of ['dark', 'light']) {
 }
 
 test('documentation uses each snippet language and theme changes preserve source', async ({ page }) => {
-  await page.goto('/docs/how-it-works/');
+  await page.goto('/guide/first-app/');
   const python = page.locator('code[data-language="python"]').first();
   const shell = page.locator('code[data-language="shell"]').first();
   await expect(python).toContainText('from pathlib import Path');
-  await expect(shell).toContainText('janel parse src/App.janel');
+  await expect(shell).toContainText('janel new first-counter');
   expect(await python.locator('span[style]').count()).toBeGreaterThan(5);
   expect(await shell.locator('span[style]').count()).toBeGreaterThan(5);
   const source = await python.textContent();
@@ -47,7 +47,7 @@ test('documentation uses each snippet language and theme changes preserve source
   await page.getByRole('button', { name: /Switch to .* theme/ }).click();
   await expect.poll(() => keyword.evaluate(element => getComputedStyle(element).color)).not.toBe(initialColor);
   expect(await python.textContent()).toBe(source);
-  await page.goto('/docs/styling/');
+  await page.goto('/guide/styles/');
   const css = page.locator('code[data-language="css"]').first();
   expect(await css.locator('span[style]').count()).toBeGreaterThan(5);
 });

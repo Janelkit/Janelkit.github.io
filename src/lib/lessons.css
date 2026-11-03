@@ -35,3 +35,16 @@
 .docs-agent-link{font-size:10px;margin:20px 0 0;color:var(--muted);padding-block:5px;border-top:1px solid var(--line)}
 @media(min-width:1101px){.docs-layout{grid-template-columns:225px minmax(0,740px) 170px;gap:36px}}
 @media(max-width:760px){.docs-sidebar{max-height:none}.docs-navigation{max-height:210px;padding:5px 10px}.doc-reading-meta{font-size:8px;gap:7px}.learning-path{padding:20px}.learning-path h2{font-size:21px}.learning-path li a{display:inline-block;min-height:30px;padding-block:5px}.lesson-expected{padding:16px}.lesson-explanation ol,.lesson-pitfalls ul,.lesson-steps{font-size:13px}.doc-section{padding-bottom:12px}.docs-agent-link{display:inline-block;min-height:36px;margin-top:12px}.doc-table{font-size:11px}.doc-table td{padding:12px}}
+
+/* Chapter goals, key points and cross-links. */
+.lesson-goals,.lesson-summary{margin:0 0 38px;padding:20px 24px;border:1px solid var(--line-strong);border-radius:3px;background:var(--surface)}
+.lesson-summary{margin:10px 0 0;border-left:2px solid var(--cyan)}
+.lesson-goals h2,.lesson-summary h2{font:9px/1.6 'Cascadia Code','Consolas',monospace;text-transform:uppercase;letter-spacing:1.1px;color:var(--pink);margin:0 0 10px}
+.lesson-summary h2{color:var(--cyan)}
+.lesson-goals ul,.lesson-summary ul{margin:0;padding-left:20px;font-size:13px;line-height:1.8;color:var(--muted)}
+.lesson-goals li,.lesson-summary li{margin-bottom:6px;padding-left:4px}
+.lesson-see{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:12px;margin:4px 0 18px}
+.lesson-see>span{font:9px 'Cascadia Code','Consolas',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--faint)}
+.lesson-see a{color:var(--text);border-bottom:1px solid var(--line-strong);padding-bottom:2px}
+.lesson-see a:hover{color:var(--pink);border-color:var(--pink)}
+@media(max-width:760px){.lesson-see a{min-height:44px;display:inline-flex;align-items:center}}

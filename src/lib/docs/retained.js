@@ -1,42 +1,6 @@
 // Source-grounded guides retained from the original documentation.
 export const retainedDocs = [
   {
-    "slug": "installation",
-    "title": "Installation",
-    "group": "Getting started",
-    "description": "Create an environment, scaffold a project, and open your first desktop window.",
-    "sections": [
-      {
-        "id": "requirements",
-        "title": "Prepare Python",
-        "body": "Use Python 3.10 or newer and a virtual environment. JanelKit uses PySide6 for Qt Quick and qasync to integrate asynchronous Python work with the Qt event loop. Activate the environment before installing packages.",
-        "language": "shell",
-        "code": "python -m venv .venv\n# Windows:\n.venv\\Scripts\\activate\n# Linux / macOS:\n# source .venv/bin/activate\npip install janelkit"
-      },
-      {
-        "id": "create-project",
-        "title": "Create and run a project",
-        "body": "The janel new command creates a starter with main.py, src/App.janel, sample components and services, and project configuration. It refuses to overwrite a nonempty directory. Running python main.py is the canonical application entry point; development mode is optional, not a prerequisite for launching the app.",
-        "language": "shell",
-        "code": "janel new my-app\ncd my-app\npython main.py"
-      },
-      {
-        "id": "entry-point",
-        "title": "Understand the entry point",
-        "body": "The public run(entry, argv=None) function compiles the root component, opens its window, and runs the Qt event loop. It returns an exit code, which SystemExit passes back to the operating system. Resolve the component relative to main.py so the entry point does not depend on the current working directory.",
-        "language": "python",
-        "code": "from pathlib import Path\nfrom janelkit import run\n\nif __name__ == \"__main__\":\n    entry = Path(__file__).parent / \"src\" / \"App.janel\"\n    raise SystemExit(run(entry))"
-      },
-      {
-        "id": "development-mode",
-        "title": "Make your first edit",
-        "body": "Run janel dev from the project folder, then edit src/App.janel. Saving a .janel file reloads the view; components whose scripts have not changed can retain state. Saving a Python or custom QML file restarts the process.",
-        "language": "shell",
-        "code": "janel dev\n# Before sharing your changes:\njanel build"
-      }
-    ]
-  },
-  {
     "slug": "cli",
     "title": "CLI and tooling",
     "group": "Reference",
@@ -60,38 +24,6 @@ export const retainedDocs = [
         "body": "janelkit.inspect.mount creates an application without a visible window and cleans it up on context exit. find requires one visible matching element; find_all returns all matches. Actions exercise real events and bindings, and app.wait lets asynchronous work and timers advance. The test below targets the counter from Introduction. Install pytest separately to run application tests.",
         "language": "python",
         "code": "from janelkit.inspect import mount\n\ndef test_counter():\n    with mount(\"src/App.janel\", headless=True) as app:\n        app.find(\"Button\", text=\"Increment\").click()\n        assert \"You clicked 1 times.\" in app.texts()"
-      }
-    ]
-  },
-  {
-    "slug": "ecosystem",
-    "title": "Ecosystem",
-    "group": "Reference",
-    "description": "Understand the core, optional companion packages, and editor tooling.",
-    "sections": [
-      {
-        "id": "core-boundary",
-        "title": "A core with public extension points",
-        "body": "The janelkit package owns the language, compiler, reactivity, components, basic controls, themes, navigation, windows, tasks, persisted state, History, inspection, and essential CLI. Optional services that can use the public API belong in companion packages. The source describes independently versioned ecosystem packages with explicit compatible core ranges. Do not infer that a proposed package exists merely because it appears in the roadmap."
-      },
-      {
-        "id": "internationalization",
-        "title": "Translations with janelkit-i18n",
-        "body": "The optional janelkit-i18n package provides i18n and t for JSON catalogs, plurals, locale-aware number and date formatting, and runtime language switching. Core janelkit.locale owns interface language and right-to-left direction; i18n.set updates it. The following initialization belongs in main.py before run(), with an application-owned locales directory. Supply matching catalog keys before using t in components.",
-        "language": "python",
-        "code": "from pathlib import Path\nfrom janelkit_i18n import i18n\n\ni18n.load(Path(__file__).parent / \"locales\")\ni18n.set(\"en\")\n\n# Inside a component script:\n# from janelkit_i18n import t\n# In its template: <Text>{t(\"greeting\", name=\"Ada\")}</Text>"
-      },
-      {
-        "id": "desktop-services",
-        "title": "Native services with janelkit-desktop",
-        "body": "The optional janelkit-desktop package provides dialogs, clipboard, and notify. Native file dialogs are asynchronous and close if their owning component unmounts. An open_file result is a Path or None when canceled. Read the selected file in background instead of blocking the UI. The following is component-script code; add a button with on:click={open_note} and display text in its template.",
-        "language": "python",
-        "code": "from janelkit import state, background\nfrom janelkit_desktop import dialogs\n\ntext = state(\"\")\n\nasync def open_note():\n    path = await dialogs.open_file(\"Open note\", filters=[\"Text (*.txt)\"])\n    if path is not None:\n        text.value = await background(path.read_text, encoding=\"utf-8\")"
-      },
-      {
-        "id": "editors-and-roadmap",
-        "title": "Editor tooling",
-        "body": "The repository includes a VS Code extension for .janel syntax highlighting, including Python and styles. The public compiler check_file and check_source APIs provide structured diagnostics without executing a component script, making them useful for editors and other development tools."
       }
     ]
   },

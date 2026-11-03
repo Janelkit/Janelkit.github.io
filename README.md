@@ -35,23 +35,24 @@ can publish them.
 
 ## Documentation checks
 
-`npm run test:content` checks the lesson schema, required teaching blocks, and coverage of the 47 top-level public names captured from JanelKit 0.1.0. `npm test` also runs the browser suite.
+`npm run test:content` checks the page schema and structure: required teaching blocks (goals, explained examples, expected results, common mistakes, key points), the chapter order, that every cross-link and written path exists, that every old `/docs/` URL redirects, that package pages cover their package's exports, and coverage of the 47 top-level public names captured from JanelKit 0.1.0. `npm test` also runs the browser suite.
 
-To verify the Python examples, use an interpreter with JanelKit and PySide6 installed (the website itself does not need Python):
+To verify the examples against a real JanelKit installation, use an interpreter with JanelKit and PySide6 installed (the website itself does not need Python). From the website folder, with the framework checked out next to it:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python scripts/validate_doc_examples.py
-PYTHONDONTWRITEBYTECODE=1 python scripts/test_doc_behaviors.py
+node scripts/export_doc_examples.mjs
+QT_QPA_PLATFORM=offscreen python scripts/validate_doc_examples.py
 ```
 
-The first command exports the current standalone examples and compiles/mounts them; the second exercises selected behaviors. Generated sources, logs, and data stay under `artifacts/doc-validation/`. A successful mount does not prove every possible interaction or multi-file snippet. See `QUALITY.md` for actual verification and limitations.
+The validator compiles and mounts every complete component, fails on compiler warnings and logged errors, runs every "Ordinary Python" snippet, and replays the behavior promised in "What you should see" for the registered examples. Fragments are counted but cannot run alone. Output stays under `artifacts/doc-validation/`. `validate_doc_examples.py` is a local helper (ignored by git); add a behavior to it whenever you write an expected result for a complete example.
 
 ## Edit
 
 - Palette: `src/lib/theme.css` (all semantic color tokens).
 - Layout and responsive rules: `src/app.css`.
 - Landing page: `src/routes/+page.svelte`.
-- English learning path: `src/lib/docs.js` orders topic modules in `src/lib/docs/`; new entries become prerendered pages.
+- Documentation structure: `src/lib/docs.js` places pages in three areas (Guide, Reference, Packages) and orders them; page content lives in topic modules in `src/lib/docs/`. Each page gets the URL `/<area>/<slug>/`; old `/docs/<slug>/` URLs redirect.
+- Where a feature comes from (core or an optional package): `src/lib/origins.js`.
 - Lesson formatting: `src/lib/components/DocSection.svelte` and `src/lib/lessons.css`.
 - Authoring rules: `DOCUMENTATION_GUIDELINES.md`.
 - Agent index/full text: `/llms.txt` and `/llms-full.txt`, generated from the same catalog.
@@ -59,4 +60,4 @@ The first command exports the current standalone examples and compiles/mounts th
 - Design rationale and palette: `DESIGN.md`.
 - Content provenance: `CONTENT_SOURCES.md`.
 
-The brand uses a provisional typographic wordmark. Google Fonts are optional remote resources with fallbacks. The docs provide a 24-page beginner learning path and public Python API reference, not a full translation of every upstream platform detail. The interactive counter is a browser simulation of the documented desktop example, explicitly labeled in the UI.
+The brand uses a provisional typographic wordmark. Google Fonts are optional remote resources with fallbacks. The Guide is an ordered learning path; the Reference and Packages areas are for lookup. They are not a full translation of every upstream platform detail. The interactive counter is a browser simulation of the documented desktop example, explicitly labeled in the UI.

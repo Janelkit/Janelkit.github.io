@@ -1,8 +1,13 @@
 import { error } from '@sveltejs/kit';
-import { docs } from '#lib/docs.js';
-export function entries() { return docs.map(doc => ({ slug: doc.slug })); }
+import { legacyRedirects, legacySlugs } from '#lib/docs.js';
+
+// Old /docs/<slug>/ URLs, published before the documentation was split into zones.
+export function entries() {
+  return legacySlugs.map(slug => ({ slug }));
+}
+
 export function load({ params }) {
-  const doc = docs.find(doc => doc.slug === params.slug);
-  if (!doc) error(404, 'Documentation page not found');
-  return { doc };
+  const to = legacyRedirects[params.slug];
+  if (!to) error(404, 'Documentation page not found');
+  return { to };
 }

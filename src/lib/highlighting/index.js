@@ -3,6 +3,7 @@ import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import python from 'shiki/langs/python.mjs';
 import css from 'shiki/langs/css.mjs';
 import shell from 'shiki/langs/shellscript.mjs';
+import json from 'shiki/langs/json.mjs';
 import grammar from './janel.tmLanguage.json' with { type: 'json' };
 
 // Reuse the VS Code extension's TextMate grammar; see README.md and LICENSE.
@@ -22,7 +23,7 @@ const theme = {
   ]
 };
 const highlighter = createHighlighterCoreSync({
-  langs: [python, css, shell, { ...grammar, name: 'janel' }],
+  langs: [python, css, shell, json, { ...grammar, name: 'janel' }],
   themes: [theme],
   engine: createJavaScriptRegexEngine({ target: 'ES2018' })
 });

@@ -14,8 +14,8 @@ test('docs do not publish obsolete platform verification or release disclaimers'
   expect(text.includes('not verified Linux or macOS')).toBe(false);
   expect(text.includes('reports Windows verification')).toBe(false);
   expect(text.includes('does not independently verify package publication')).toBe(false);
-  await page.goto('/docs/cli/');
+  await page.goto('/guide/cli/');
   await expect(page.getByRole('heading',{name:'Separate validation from distribution',exact:true})).toHaveCount(0);
-  await page.goto('/docs/installation/');
+  await page.goto('/guide/installation/');
   await expect(page.locator('article')).toContainText('Linux / macOS');
 });

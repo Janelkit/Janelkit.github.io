@@ -145,8 +145,8 @@ message = state("Ready")
     ]
   },
   {
-    slug: 'lifecycle', title: 'Lifecycle', group: 'Components',
-    description: 'Understand setup, view mounting, reactive updates, teardown, and the exact ownership of cleanup.',
+    slug: 'lifecycle', title: 'Lifecycle and effects', group: 'Components',
+    description: 'Understand setup, view mounting, reactive updates and teardown, run effects, and know who cleans up what.',
     sections: [
       {
         id: 'five-moments', title: 'Separate five different moments',
@@ -199,6 +199,41 @@ watcher = effect(watch)
 </Column>`,
         expected: 'Setup prints connect alpha. The first switch prints disconnect alpha before connect beta. Destruction prints disconnect beta.',
         explanation: ['The cleanup captures selected, the value associated with that particular run.', 'Effect.dispose() allows early disposal; an effect created during setup is also disposed with its component.']
+      },
+      {
+        id: 'stop-an-effect', title: 'Use an effect for an action, and stop it when you are done',
+        body: 'An effect is for doing something outside the interface when data changes: logging, saving a preference, keeping a connection in sync. It is not for calculating a value; that is what computed is for. effect(fn) runs fn immediately and again whenever the state it read changes. If fn returns a function, that function is the cleanup: it runs before the next run and when the effect ends.\n\nAn effect created in a component script ends with the component. You can also end it earlier: effect returns an Effect object whose dispose() unsubscribes it and runs the last cleanup. An effect created in an ordinary module, outside any component, has no owner, so you must keep it and call dispose() yourself.',
+        file: 'src/App.janel', language: 'janel', standalone: true,
+        code: `<script lang="python">
+from janelkit import state, effect
+channel = state("news")
+
+def watch_channel():
+    name = channel.value
+    print("Start", name)
+    return lambda: print("Stop", name)
+
+watcher = effect(watch_channel)
+
+def stop_watching():
+    watcher.dispose()
+</script>
+
+<Column padding={24} gap={12}>
+  <Text>Channel: {channel}</Text>
+  <Button on:click={channel = "sports"}>Choose sports</Button>
+  <Button on:click={stop_watching}>Stop watching</Button>
+</Column>`,
+        explanation: [
+          'The effect reads channel, so it reruns whenever channel changes.',
+          'The returned lambda is the cleanup. It remembers the name of the run that created it.',
+          'watcher.dispose() ends the effect early; the label keeps updating because it is a binding, not part of the effect.'
+        ],
+        expected: 'Setup prints Start news. Choosing sports prints Stop news, then Start sports. Stop watching prints Stop sports; later changes to channel still update the label but no longer run the effect.',
+        pitfalls: [
+          'Do not write a state that the same effect reads and increments: that creates an endless loop.',
+          'Hiding a component with {#hidden} does not stop its effects. Only removing it does.'
+        ]
       },
       {
         id: 'cleanup-order', title: 'Cleanup order follows registration, not hook names',

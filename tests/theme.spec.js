@@ -20,14 +20,14 @@ test('saved light preference applies before hydration and docs remain readable w
   await context.addInitScript(()=>localStorage.setItem('janelkit-theme','light'));
   const page=await context.newPage();
   await page.route('**/*',route=>route.request().resourceType()==='script'?route.abort():route.continue());
-  await page.goto('http://127.0.0.1:5173/docs/lifecycle/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:5173/guide/lifecycle/',{waitUntil:'domcontentloaded'});
   await expect(page.locator('html')).toHaveAttribute('data-theme','light');
   await expect(page.locator('.theme-toggle')).toBeDisabled();
   await context.close();
   const nojs=await browser.newContext({javaScriptEnabled:false});
   const plain=await nojs.newPage();
-  await plain.goto('http://127.0.0.1:5173/docs/introduction/');
-  await expect(plain.getByRole('heading',{level:1})).toHaveText('Introduction');
+  await plain.goto('http://127.0.0.1:5173/guide/introduction/');
+  await expect(plain.getByRole('heading',{level:1})).toHaveText('What is JanelKit?');
   await nojs.close();
 });
 
@@ -43,7 +43,7 @@ for(const width of [320,390,1024]){
     await page.setViewportSize({width,height:844});
     await page.goto('/');
     await page.getByRole('button',{name:'Switch to light theme'}).click();
-    for(const path of ['/','/docs/python-api/']){
+    for(const path of ['/','/reference/python-api/']){
       await page.goto(path);
       await expect(page.getByRole('button',{name:'Switch to dark theme'})).toBeVisible();
       expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
