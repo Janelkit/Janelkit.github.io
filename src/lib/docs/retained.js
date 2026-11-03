@@ -1,4 +1,4 @@
-// Source-grounded guides retained from the original documentation.
+// CLI workflow and retained AI-agent guidance.
 export const retainedDocs = [
   {
     "slug": "cli",
@@ -9,9 +9,17 @@ export const retainedDocs = [
       {
         "id": "commands",
         "title": "The everyday commands",
-        "body": "janel new scaffolds a project and accepts --path DIR. janel dev optionally accepts a project folder. janel build validates every .janel file, including unused components, writes generated QML to build/qml by default, and exits with code 1 on compilation errors. build accepts -o DIR. Every command accepts --help. Build does not create an executable or installer.",
+        "body": "janel new scaffolds a project and accepts --path DIR. janel dev optionally accepts a project folder. janel build validates every .janel file, including unused components, writes generated QML to build/qml by default, and exits with code 1 on compilation errors. build accepts -o DIR. Every command accepts --help. Build does not create an executable or installer.\n\nIn 0.1.0, build does not load the generated QML in Qt. It can succeed even when Qt rejects a color at startup. Follow it with a startup or mount check and application tests.",
         "language": "shell",
-        "code": "janel new my-app\ncd my-app\njanel dev\njanel build\njanel compile src/App.janel\njanel parse src/App.janel"
+        "code": "janel new my-app\ncd my-app\njanel dev\njanel build\njanel compile src/App.janel\njanel parse src/App.janel",
+        "explanation": [
+          "new creates the application scaffold; dev runs the development edit loop.",
+          "build compiles all project components; compile and parse help isolate a single-file problem."
+        ],
+        "expected": "The scaffold is created, dev runs the application, and build writes generated QML. None of these commands creates a standalone executable.",
+        "pitfalls": [
+          "Do not edit generated QML as application source or treat build success as proof of startup."
+        ]
       },
       {
         "id": "diagnostics-and-reload",
@@ -19,12 +27,85 @@ export const retainedDocs = [
         "body": "Diagnostics include file, line, column, and suggestions when available. parse exposes the AST; compile exposes generated QML. Treat those outputs as debugging aids, not stable runtime interfaces. During development, invalid edits keep the last working view open. A changed component script resets that component state; unchanged scripts may retain state. Reload does not preserve focus, text selection, or secondary windows."
       },
       {
-        "id": "headless-tests",
-        "title": "Test the interface through public inspection",
-        "body": "janelkit.inspect.mount creates an application without a visible window and cleans it up on context exit. find requires one visible matching element; find_all returns all matches. Actions exercise real events and bindings, and app.wait lets asynchronous work and timers advance. The test below targets the counter from Introduction. Install pytest separately to run application tests.",
-        "language": "python",
-        "code": "from janelkit.inspect import mount\n\ndef test_counter():\n    with mount(\"src/App.janel\", headless=True) as app:\n        app.find(\"Button\", text=\"Increment\").click()\n        assert \"You clicked 1 times.\" in app.texts()"
+        "id": "choose-a-check",
+        "title": "Choose the check for the failure stage",
+        "body": "Use the smallest check that addresses your question, then widen validation. Passing an earlier stage does not prove the later stages work.",
+        "table": {
+          "headers": [
+            "Question",
+            "Command or check",
+            "What it does not prove"
+          ],
+          "rows": [
+            [
+              "Is the file structurally valid?",
+              "janel parse src/App.janel",
+              "Element names and runtime behavior"
+            ],
+            [
+              "Can the component compile?",
+              "janel compile src/App.janel",
+              "Qt startup or user interactions"
+            ],
+            [
+              "Can every project component compile?",
+              "janel build",
+              "Qt startup, service results or packaging"
+            ],
+            [
+              "Does the view load and respond?",
+              "Headless mount and application tests",
+              "Native desktop appearance or installer behavior"
+            ],
+            [
+              "Does the distributed application work?",
+              "Run the packaged application on each supported platform",
+              "Other platforms you did not test"
+            ]
+          ]
+        },
+        "see": [
+          "testing",
+          "troubleshooting"
+        ]
+      },
+      {
+        "id": "options-and-output",
+        "title": "Use explicit paths and keep output separate",
+        "body": "The core CLI provides these command forms. Every command accepts --help; janel --version prints the installed framework version. CLI diagnostics and help are currently in Spanish. Optional packages can register additional commands, so inspect your installed help before assuming a plugin command exists.",
+        "language": "shell",
+        "code": "janel --version\njanel --help\njanel new my-app --path .\njanel dev my-app\njanel build my-app -o generated-qml\njanel compile my-app/src/App.janel -o App.qml\njanel parse my-app/src/App.janel",
+        "pitfalls": [
+          "The destination passed to compile -o is a file; build -o takes a directory.",
+          "A successful command can still print warnings. Read stderr as well as the exit code."
+        ]
+      },
+      {
+        "id": "delivery-boundary",
+        "title": "Keep development, testing and distribution separate",
+        "body": "A reliable release sequence compiles the project, runs application tests, launches the application, and then exercises the packaged artifact. janel build is the compilation step only. Distribution needs an external packager and explicit inclusion of application resources and the Qt runtime; the packaging chapter will describe that separate workflow.",
+        "steps": [
+          "Use dev while editing; check the terminal when an update fails.",
+          "Run build from a known project directory and read its warnings.",
+          "Run python -m pytest in the application environment.",
+          "Review the running application with keyboard and representative data.",
+          "Verify the packaged artifact on each platform you actually support."
+        ],
+        "see": [
+          "testing",
+          "troubleshooting"
+        ]
       }
+    ],
+    "learn": [
+      "Choose the right command for development or diagnosis.",
+      "Distinguish parsing, compilation, startup checks and executable packaging.",
+      "Understand reload boundaries and preserve actionable diagnostics."
+    ],
+    "summary": [
+      "Use dev for the edit loop and build for project-wide compilation.",
+      "parse and compile expose different stages; neither is a complete application test.",
+      "Generated QML is output, not an executable or a stable application API."
     ]
   },
   {

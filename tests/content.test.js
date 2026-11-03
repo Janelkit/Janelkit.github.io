@@ -21,7 +21,7 @@ test('the learning path teaches from no framework experience to lifecycle and pu
 });
 
 test('lessons explain examples, results and common mistakes instead of just listing APIs', () => {
-  for (const doc of zoneDocs('guide').filter(doc => !['testing', 'troubleshooting', 'cli'].includes(doc.slug))) {
+  for (const doc of zoneDocs('guide')) {
     assert.ok(doc.sections.length>=4,`${doc.slug} needs at least four teaching sections`);
     assert.ok(doc.sections.some(s=>s.explanation?.length),`${doc.slug} needs an explained example`);
     assert.ok(doc.sections.some(s=>s.expected),`${doc.slug} needs an observable expected result`);
@@ -30,7 +30,7 @@ test('lessons explain examples, results and common mistakes instead of just list
 });
 
 test('rewritten chapters open with goals and close with key points', () => {
-  for (const doc of zoneDocs('guide').filter(doc => ['Start', 'Fundamentals', 'Building applications', 'Advanced interface', 'Under the hood'].includes(doc.group))) {
+  for (const doc of zoneDocs('guide')) {
     assert.ok(doc.learn?.length >= 2 && doc.learn.length <= 5, `${doc.slug} needs 2–5 learning goals`);
     assert.ok(doc.summary?.length >= 2 && doc.summary.length <= 4, `${doc.slug} needs 2–4 key points`);
   }

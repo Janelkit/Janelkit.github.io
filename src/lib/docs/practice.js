@@ -1,22 +1,26 @@
-// Sources: JanelKit/docs/api.md, lenguaje.md, desarrollo.md and inspect.py.
+// Source-verified quality chapters; framework checkout stays read-only.
 export const practiceDocs = [
   {
     "slug": "testing",
     "title": "Testing your application",
-    "group": "Reference",
     "description": "Check compilation, click real controls headlessly, and test behavior rather than generated internals.",
     "sections": [
       {
         "id": "validation-vs-behavior",
         "title": "Compilation and behavior are different checks",
-        "body": "A compiler check asks whether a component uses valid syntax, supported elements, and valid references. A behavior test asks whether the application does what a user expects. Both matter. A component may compile and still add the wrong item or forget to clear an input.\n\nStart by running janel build from the application folder. This validates all .janel components, including components not currently used, and writes generated QML. It does not click controls, prove business logic, or package an executable.",
+        "body": "A compiler check asks whether a component uses valid syntax, supported elements, and valid references. A behavior test asks whether the application does what a user expects. Both matter. A component may compile and still add the wrong item or forget to clear an input.\n\nStart by running janel build from the application folder. This validates all .janel components, including components not currently used, and writes generated QML. It does not click controls, prove business logic, or package an executable.\n\nIn 0.1.0, build does not ask Qt to load the generated view. A misspelled color such as blu can pass compilation and still prevent startup. Add a mount test, then exercise behavior; do not interpret a successful build as a startup guarantee.",
         "code": "janel build\n# For a single component diagnostic:\njanel parse src/App.janel\njanel compile src/App.janel",
         "language": "shell",
         "explanation": [
           "build is the quick project-wide validity check. Fix compile errors before looking for a visual behavior bug.",
           "parse exposes the parsed structure; compile shows generated QML. These are debugging outputs, not files you should edit as application source."
         ],
-        "expected": "A successful build completes without compiler errors and writes output to build/qml by default. That success alone does not mean the application behavior has been tested."
+        "expected": "A successful build completes without compiler errors and writes output to build/qml by default. That success alone does not mean the application behavior has been tested.",
+        "see": [
+          "cli",
+          "troubleshooting",
+          "style-reference"
+        ]
       },
       {
         "id": "a-testable-example",
@@ -25,7 +29,11 @@ export const practiceDocs = [
         "code": "<script lang=\"python\">\nfrom janelkit import state\ncount = state(0)\n\ndef increment():\n    count.value += 1\n</script>\n\n<Window title=\"Testable counter\" width={420} height={260}>\n  <Column>\n    <Text id=\"count-label\">Count: {count}</Text>\n    <Button id=\"increment\" on:click={increment}>Increment</Button>\n  </Column>\n</Window>",
         "language": "janel",
         "standalone": true,
-        "expected": "The window starts at Count: 0. Clicking Increment changes it to Count: 1."
+        "expected": "The window starts at Count: 0. Clicking Increment changes it to Count: 1.",
+        "explanation": [
+          "The Text and Button are written directly in this component rather than passed through a slot, avoiding a known inspector type-detection problem.",
+          "Stable IDs let the test identify a control without depending on the wording of its caption."
+        ]
       },
       {
         "id": "first-headless-test",
@@ -48,7 +56,7 @@ export const practiceDocs = [
       {
         "id": "more-actions",
         "title": "Exercise the same controls the user does",
-        "body": "The inspector supports more than clicks. type enters text, submit sends a field submission, check changes a boolean, choose selects an option, slide changes a slider, and key sends keyboard input. find_all is useful when multiple matches are expected. app.texts() provides the displayed text collection.\n\nFor async work, app.wait(seconds, until=...) processes the application while waiting for a result. Test success, error, loading, repeated requests, and the component disappearing during work. A timeout should fail the test rather than silently accepting an incomplete operation.",
+        "body": "The inspector supports more than clicks. type replaces the existing text, submit sends a field submission, check changes a boolean, choose selects an option, slide changes a slider, and key sends keyboard input. find_all is useful when multiple matches are expected. app.texts() collects recognized Text elements, but in 0.1.0 can omit Text roots of child components and Text inside slots. Use an ID and read .text when checking those elements.\n\nFor async work, app.wait(seconds, until=...) processes the application while waiting for a result. Test success, error, loading, repeated requests, and the component disappearing during work. A timeout should fail the test rather than silently accepting an incomplete operation.\n\nFor a condition, use app.wait(until=lambda: ..., timeout=2.0). The seconds argument sets a minimum wait, while timeout bounds waiting for the condition. Keep assertions inside the with block: Qt items are destroyed when the mount closes.",
         "table": {
           "headers": [
             "Behavior",
@@ -104,13 +112,60 @@ export const practiceDocs = [
           "A headless test is not a substitute for checking readability, keyboard focus, and native platform behavior.",
           "Canceling a UI task does not stop a synchronous worker or an external provider request; design service tests around that boundary."
         ]
+      },
+      {
+        "id": "known-inspector-limits",
+        "title": "Known inspector limitations in 0.1.0",
+        "body": "The inspector can identify a component root or an element passed through a slot by the component name instead of its built-in type. This is a framework limitation, not evidence that your application is broken. An ID can locate the element, but it does not fix type-dependent actions such as click() or type().",
+        "table": {
+          "headers": [
+            "Symptom",
+            "What to do now"
+          ],
+          "rows": [
+            [
+              "find(\"Button\") misses a slot button; click() refuses it",
+              "Keep the introductory interaction tests on directly declared controls. For an affected composition, record the limitation and test it manually rather than claiming automated coverage."
+            ],
+            [
+              "app.texts() omits a child-root Text or slot Text",
+              "Find the element by ID and assert its .text inside the mount."
+            ],
+            [
+              "type() fails or value is None for a slot TextField",
+              "Test form binding with a directly declared field and check the affected composed form manually."
+            ],
+            [
+              "An element stops working after the with block",
+              "Read and interact with elements before the mount closes."
+            ]
+          ]
+        },
+        "pitfalls": [
+          "Do not replace a failed UI action with a state assignment and report that the interaction passed.",
+          "Offscreen tests do not verify native dialogs, platform notifications, visual contrast or the distributed executable."
+        ],
+        "see": [
+          "components",
+          "forms",
+          "troubleshooting"
+        ]
       }
+    ],
+    "learn": [
+      "Separate compilation checks from startup and behavior tests.",
+      "Write a repeatable headless test with stable element IDs.",
+      "Recognize inspector limitations in JanelKit 0.1.0."
+    ],
+    "summary": [
+      "A successful build is not proof that Qt can load the view or that behavior is correct.",
+      "Assert visible behavior inside the mount block, using stable IDs.",
+      "Test ordinary Python separately and review native behavior manually."
     ]
   },
   {
     "slug": "troubleshooting",
     "title": "Errors and troubleshooting",
-    "group": "Reference",
     "description": "Learn to read diagnostics and distinguish template, state, layout, and lifetime problems.",
     "sections": [
       {
@@ -133,6 +188,11 @@ export const practiceDocs = [
               "Template compile",
               "Unknown tag, event, property, or undefined name",
               "Spelling and the documented element API"
+            ],
+            [
+              "Qt startup",
+              "Generated QML contains a color or assignment Qt rejects",
+              "Mount or run the application; build alone does not load QML"
             ],
             [
               "Python setup",
@@ -196,7 +256,7 @@ export const practiceDocs = [
       {
         "id": "responsive-and-blocking",
         "title": "The window freezes or the layout does not fit",
-        "body": "An async def function still runs on the UI thread. A blocking library call inside it can freeze the interface before the next await yields. Put synchronous blocking work behind await background(fn, ...) and assign its returned result on the UI loop. A worker must not mutate state or touch controls.\n\nFor layout problems, simplify to a Window with one Row or Column. Check the parent main axis before adding flex={1}; check content minimum sizes before assuming a field will shrink. Unsupported browser CSS is a warning, not a fallback layout implementation. Read the supported style subset rather than adding more unrelated rules.",
+        "body": "An async def function still runs on the UI thread. A blocking library call inside it can freeze the interface before the next await yields. Put synchronous blocking work behind await background(fn, ...) and assign its returned result on the UI loop. A worker must not mutate state or touch controls.\n\nFor layout problems, simplify to a Window with one Row or Column. Check the parent main axis before adding flex={1}; check content minimum sizes before assuming a field will shrink. Unsupported style declarations warn when the rule matches an element; unsupported selectors and at-rules are compile errors. A rule matching nothing may stay silent. Read the supported style subset rather than adding more unrelated rules.",
         "steps": [
           "Run janel build and resolve errors and warnings.",
           "Reduce the failing behavior to one component and one interaction.",
@@ -204,8 +264,73 @@ export const practiceDocs = [
           "Use janelkit.inspect to write a failing test for the observed bug.",
           "After the fix, test the initial view, repeated actions, empty values, and teardown."
         ],
-        "expected": "A minimal reproducible example reveals whether the issue is data ownership, invalid syntax, layout constraints, or work blocking the UI. Report the source component and exact diagnostic rather than only a screenshot of the final symptom."
+        "expected": "A minimal reproducible example reveals whether the issue is data ownership, invalid syntax, layout constraints, or work blocking the UI. Report the source component and exact diagnostic rather than only a screenshot of the final symptom.",
+        "see": [
+          "style-reference",
+          "testing",
+          "async",
+          "layout"
+        ]
+      },
+      {
+        "id": "confirmed-limitations",
+        "title": "Check the known limitations before blaming your app",
+        "body": "These behaviors have been reproduced in the current 0.1.0 framework. Keep the reproduction small and include your installed version in a bug report; do not assume a future fix is already available.",
+        "table": {
+          "headers": [
+            "Symptom",
+            "Confirmed behavior",
+            "Safe next step"
+          ],
+          "rows": [
+            [
+              "Build passes, window refuses to open",
+              "Bare color names are not validated against Qt at compile time",
+              "Replace questionable names with hex colors or known theme tokens; mount again."
+            ],
+            [
+              "A style rule has no effect and no warning",
+              "Rules that match nothing are not checked; a component-name selector such as Card does not style its root",
+              "Use a class on the component tag, and check the supported-style reference."
+            ],
+            [
+              "Inspector cannot click a slotted button",
+              "Type detection can mistake slot elements for component roots",
+              "Read the Testing limitations; distinguish missing automated coverage from an application failure."
+            ],
+            [
+              "A dictionary key changes after restarting",
+              "persisted JSON storage converts non-text keys to strings",
+              "Use string keys before saving; test a save-and-reload round trip."
+            ],
+            [
+              "A transition ignores ease-in or a delay",
+              "Only the property and duration are used",
+              "Use the supported transition form; do not depend on the ignored words."
+            ]
+          ]
+        },
+        "pitfalls": [
+          "class=\"misspelled\" and class={...} do not trigger the missing-class warning; that warning currently applies to class:name.",
+          "The missing accessible-name warning is implemented for clickable flex boxes, not every clickable Row or Column. Review keyboard access and labels yourself."
+        ],
+        "see": [
+          "style-reference",
+          "testing",
+          "persistence",
+          "accessibility"
+        ]
       }
+    ],
+    "learn": [
+      "Locate the stage where an error occurs before changing code.",
+      "Distinguish state, lifetime, layout and blocking-work problems.",
+      "Recognize confirmed 0.1.0 limitations and produce a small reproduction."
+    ],
+    "summary": [
+      "Start with the exact diagnostic and the stage that produced it.",
+      "Check ownership and lifetime before changing reactive code.",
+      "Compilation, Qt startup, user interactions and packaging need separate checks."
     ]
   }
 ];
