@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { docs, zoneDocs, legacyRedirects } from '../src/lib/docs.js';
+import { docs, zoneDocs, redirects } from '../src/lib/docs.js';
 
 test('documentation search handles matching and empty queries', async ({ page }) => {
   await page.goto('/guide/introduction/');
@@ -57,8 +57,8 @@ test('search reaches every area and labels results by area', async ({page}) => {
   await page.goto('/guide/introduction/');
   await page.getByRole('searchbox').fill('clipboard');
   const topics = page.getByRole('navigation', {name:'Documentation topics'});
-  await expect(topics.getByRole('link', {name:'janelkit-desktop', exact:true})).toBeVisible();
-  await expect(topics.getByText('Packages · Optional packages', {exact:true})).toBeVisible();
+  await expect(topics.getByRole('link', {name:'Clipboard', exact:true})).toBeVisible();
+  await expect(topics.getByText('Ecosystem · Desktop', {exact:true})).toBeVisible();
 });
 
 test('areas are separate: tabs switch the sidebar and only the guide has chapters', async ({page}) => {
@@ -66,32 +66,45 @@ test('areas are separate: tabs switch the sidebar and only the guide has chapter
   const areas = page.getByRole('navigation', {name:'Documentation areas'});
   await expect(areas.getByRole('link', {name:'Guide'})).toHaveAttribute('aria-current', 'true');
   await expect(page.getByLabel('Learning path')).toContainText(`CHAPTER 01 / ${String(zoneDocs('guide').length).padStart(2,'0')}`);
-  await areas.getByRole('link', {name:'Packages'}).click();
-  await expect(page).toHaveURL(/\/packages\/overview\/$/);
-  await expect(page.getByRole('navigation', {name:'Documentation topics'}).getByRole('link')).toHaveCount(zoneDocs('packages').length);
+  await areas.getByRole('link', {name:'Ecosystem'}).click();
+  await expect(page).toHaveURL(/\/ecosystem\/$/);
+  await expect(page.getByRole('navigation', {name:'Documentation topics'}).getByRole('link')).toHaveCount(zoneDocs('ecosystem').length);
   await expect(page.getByLabel('Learning path')).toHaveCount(0);
   await expect(page.getByRole('navigation', {name:'Chapter navigation'})).toHaveCount(0);
+  await expect(page.getByRole('region', {name:'Packages'}).getByRole('link')).toHaveCount(5);
+});
+
+test('each package is a section whose pages lead from one to the next', async ({page}) => {
+  await page.goto('/ecosystem/router/');
+  await expect(page.getByLabel('Package pages')).toContainText('ROUTER · PAGE 1 /');
+  await page.getByRole('navigation', {name:'Chapter navigation'}).getByRole('link', {name:/Page stacks/}).click();
+  await expect(page).toHaveURL(/\/ecosystem\/router\/stacks\/$/);
+  await expect(page.locator('.doc-origin')).toContainText('pip install janelkit-router');
 });
 
 test('every page states where its feature comes from', async ({page}) => {
   await page.goto('/guide/elements/');
   await expect(page.locator('.doc-origin')).toContainText('Included with janelkit');
   await expect(page.locator('article')).toContainText('Every element on this page is part of the core janelkit package');
-  await page.goto('/packages/janelkit-desktop/');
+  await page.goto('/ecosystem/desktop/');
   await expect(page.locator('.doc-origin')).toContainText('pip install janelkit-desktop');
   await expect(page.locator('.doc-origin')).toContainText('adds no interface controls');
 });
 
-test('old /docs/ addresses redirect to the new page and keep the anchor', async ({page}) => {
-  for (const [slug, to] of Object.entries(legacyRedirects)) {
-    const response = await page.request.get(`/docs/${slug}/`);
-    expect(response.status(), slug).toBe(200);
+test('old addresses redirect to the new page and keep the anchor', async ({page}) => {
+  for (const from of Object.keys(redirects)) {
+    const response = await page.request.get(from);
+    expect(response.status(), from).toBe(200);
   }
   await page.goto('/docs/reactivity/#counter');
   await expect(page).toHaveURL(/\/guide\/state\/#counter$/);
   await expect(page.getByRole('heading', {level:1})).toHaveText('Reactive state');
   await page.goto('/docs/ecosystem/');
-  await expect(page).toHaveURL(/\/packages\/overview\/$/);
+  await expect(page).toHaveURL(/\/ecosystem\/$/);
   await page.goto('/reference/');
   await expect(page).toHaveURL(/\/reference\/python-api\/$/);
+  await page.goto('/packages/janelkit-desktop/');
+  await expect(page).toHaveURL(/\/ecosystem\/desktop\/$/);
+  await page.goto('/guide/navigation/');
+  await expect(page).toHaveURL(/\/ecosystem\/router\/$/);
 });
