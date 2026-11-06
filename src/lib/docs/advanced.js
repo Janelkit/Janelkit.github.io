@@ -22,7 +22,7 @@ export const advancedDocs = [
       {
         id: 'keyboard',
         title: 'Focus follows the template order',
-        body: 'Tab and Shift+Tab move the keyboard focus through the controls in the order they appear in the template. A Column, Row or flex with on:click also joins that order and is activated with Space or Enter, like a button. The focused element always shows a ring in the --primary color; you can restyle it with an outline rule, but keep it visible.\n\ntabindex={0} adds a box to the Tab order; tabindex={-1} removes it, although code can still focus it with a ref. disabled={True} on a box removes it from the order and ignores its events.',
+        body: 'Tab and Shift+Tab move the keyboard focus through the controls in the order they appear in the template. A <column>, <row> or flex with on:click also joins that order and is activated with Space or Enter, like a button. The focused element always shows a ring in the --primary color; you can restyle it with an outline rule, but keep it visible.\n\ntabindex={0} adds a box to the Tab order; tabindex={-1} removes it, although code can still focus it with a ref. disabled={True} on a box removes it from the order and ignores its events.',
         steps: [
           'Put the mouse away and reach every action with Tab, Shift+Tab, Space and Enter.',
           'Check that the order matches the visual order. If it does not, reorder the template.',
@@ -35,54 +35,54 @@ export const advancedDocs = [
         body: 'Screen readers announce a control’s text: the caption of a button, checkbox, option or tab, or the placeholder of an empty field. label="…" on any element sets or replaces that name. Use it on fields without visible text, on icon-only actions and on clickable cards. Images use alt to describe what they show.',
         language: 'janel',
         code: `<!-- query and note come from the script; open is a function. -->
-<TextField bind:value={query} placeholder="Search…" label="Search notes" />
-<Row class="card" on:click={open(note)} label={f"Open {note['title']}"}>…</Row>
-<Image src="logo.png" alt="Company logo" />`,
+<textfield bind:value={query} placeholder="Search…" label="Search notes" />
+<row class="card" on:click={open(note)} label={f"Open {note['title']}"}>…</row>
+<image src="logo.png" alt="Company logo" />`,
         pitfalls: [
-          'A clickable flex box, or one with as="button", that has no text or label produces a compile warning: a screen reader would not know what it is. A clickable Row or Column gets no such warning, so check those yourself.',
+          'A clickable flex box, or one with as="button", that has no text or label produces a compile warning: a screen reader would not know what it is. A clickable <row> or <column> gets no such warning, so check those yourself.',
           'Color and position alone do not tell anyone what a control does.'
         ]
       },
       {
         id: 'roles',
         title: 'Give custom boxes a role with as',
-        body: 'When you build a control from a flex box, as tells the keyboard and screen readers what it is. It changes behavior and meaning, not appearance. A plain Button is still the clearest choice for a simple action; use as when you build a tab, a menu item or a switch of your own.',
+        body: 'When you build a control from a flex box, as tells the keyboard and screen readers what it is. It changes behavior and meaning, not appearance. A plain <button> is still the clearest choice for a simple action; use as when you build a tab, a menu item or a switch of your own.',
         table: { headers: ['as', 'In the Tab order', 'Keyboard', 'Announced as'], rows: [
           ['(none)', 'Only with on:click', 'Like button', 'Like button when clickable'],
           ['box', 'No', '—', 'Ignored'],
-          ['button', 'Yes', 'Space (on release) or Enter → on:click', 'Button'],
+          ['button', 'Yes', 'Space (on release) or Enter → on:click', '<button>'],
           ['link', 'Yes', 'Enter', 'Link'],
-          ['checkbox, switch', 'Yes', 'Space', 'Checkbox, with checked'],
+          ['checkbox, switch', 'Yes', 'Space', '<checkbox>, with checked'],
           ['tab, menuitem, option', 'With tabindex', 'Space or Enter; arrows are yours to program with on:keydown', 'With selected'],
           ['listitem, list, menu, tablist, dialog, heading, region', 'No', '—', 'Its role']
         ] },
         language: 'janel',
         code: `<!-- muted is a Boolean state. -->
 <flex as="switch" checked={muted} on:click={muted = not muted} label="Mute notifications" class="toggle">
-  <Text>{"Muted" if muted else "Sound on"}</Text>
+  <text>{"Muted" if muted else "Sound on"}</text>
 </flex>`,
         explanation: [
           'as="switch" puts the box in the Tab order and makes Space activate it.',
           'checked={muted} tells the screen reader the current state and enables the :checked style.',
-          'label gives the switch a stable name, while the Text shows the current state.'
+          'label gives the switch a stable name, while the <text> shows the current state.'
         ]
       },
       {
         id: 'shortcuts',
         title: 'Shortcuts for frequent actions',
-        body: '<Shortcut keys="Ctrl+S" on:activate={save} /> listens to its window’s keyboard and takes no space. Keys are written as in Qt: Ctrl+Shift+N, F5, Esc. A Shortcut inside an {#if} is only active while its branch exists. For keys inside a single field, use that field’s on:keydown instead.',
+        body: '<shortcut keys="Ctrl+S" on:activate={save} /> listens to its window’s keyboard and takes no space. Keys are written as in Qt: Ctrl+Shift+N, F5, Esc. A <shortcut> inside an {#if} is only active while its branch exists. For keys inside a single field, use that field’s on:keydown instead.',
         language: 'janel', standalone: true,
         code: `<script lang="python">
 from janelkit import state
 saved = state(0)
 </script>
 
-<Window title="Shortcuts" width={380} height={200}>
-  <Column padding={24} gap={12}>
-    <Shortcut keys="Ctrl+S" on:activate={saved += 1} />
-    <Text>Press Ctrl+S. Saved {saved} times.</Text>
-  </Column>
-</Window>`,
+<window title="Shortcuts" width={380} height={200}>
+  <column padding={24} gap={12}>
+    <shortcut keys="Ctrl+S" on:activate={saved += 1} />
+    <text>Press Ctrl+S. Saved {saved} times.</text>
+  </column>
+</window>`,
         expected: 'Each Ctrl+S increases the number, wherever the focus is in the window.',
         see: ['forms']
       }
@@ -90,57 +90,57 @@ saved = state(0)
     summary: [
       'Tab order follows the template; keep focus visible.',
       'Name every control without visible text with label; describe images with alt.',
-      'Use as on custom boxes and Shortcut for frequent actions.'
+      'Use as on custom boxes and <shortcut> for frequent actions.'
     ]
   },
   {
     slug: 'large-lists',
     title: 'Large lists',
-    description: 'Show thousands of rows with List, understand how its rows live and die, and control scrolling.',
+    description: 'Show thousands of rows with <list>, understand how its rows live and die, and control scrolling.',
     learn: [
-      'When to use List instead of Scroll.',
-      'The rules a List follows and why typed text must live in state.',
+      'When to use <list> instead of <scroll>.',
+      'The rules a <list> follows and why typed text must live in state.',
       'How to follow new rows, load older ones and scroll from code.'
     ],
     sections: [
       {
         id: 'scroll-or-list',
-        title: 'Scroll creates everything; List creates what you see',
-        body: 'Scroll creates every row up front, which is simple and fine for dozens of rows. List is virtualized: it creates only the rows on screen plus a margin, and reuses that work as you scroll. Use it for hundreds or thousands of rows, such as a log, a chat or a table of records. With 10,000 rows, creating the list takes about 40 ms.',
+        title: '<scroll> creates everything; <list> creates what you see',
+        body: '<scroll> creates every row up front, which is simple and fine for dozens of rows. <list> is virtualized: it creates only the rows on screen plus a margin, and reuses that work as you scroll. Use it for hundreds or thousands of rows, such as a log, a chat or a table of records. With 10,000 rows, creating the list takes about 40 ms.',
         language: 'janel', standalone: true,
         code: `<script lang="python">
 from janelkit import state
 rows = state([{"id": n, "title": f"Item {n}"} for n in range(1, 2001)])
 </script>
 
-<Window title="Two thousand rows" width={440} height={360}>
-  <List gap={4} padding={12}>
+<window title="Two thousand rows" width={440} height={360}>
+  <list gap={4} padding={12}>
     {#each rows as row (row["id"])}
-      <Text>{row["title"]}</Text>
+      <text>{row["title"]}</text>
     {/each}
-  </List>
-</Window>`,
+  </list>
+</window>`,
         expected: 'A scrollable window shows Item 1, Item 2 and so on, smoothly, up to Item 2000.',
         explanation: [
           'The state holds 2,000 dictionaries, but only the rows on screen get a view.',
           'The key row["id"] lets the list keep track of each row while you scroll.',
-          'gap and padding are set on the List itself, like on a Column.'
+          'gap and padding are set on the <list> itself, like on a <column>.'
         ]
       },
       {
         id: 'rules',
-        title: 'The rules of a List',
-        body: 'A List contains exactly one {#each}, with a key. Inside the rows, everything works as usual: index, handlers, components and reactive collections. Rows take the full width of the list; the list accepts gap, padding, background, border and radius, and takes the free space of its container by default.\n\n{:else} is not available inside a List. Show the empty state with an {#if} outside it.',
+        title: 'The rules of a <list>',
+        body: 'A <list> contains exactly one {#each}, with a key. Inside the rows, everything works as usual: index, handlers, components and reactive collections. Rows take the full width of the list; the list accepts gap, padding, background, border and radius, and takes the free space of its container by default.\n\n{:else} is not available inside a <list>. Show the empty state with an {#if} outside it.',
         language: 'janel',
         code: `<!-- tasks is a list state of dictionaries with "id" and "title". -->
 {#if not tasks}
-  <Text>No tasks yet.</Text>
+  <text>No tasks yet.</text>
 {/if}
-<List>
+<list>
   {#each tasks as task (task["id"])}
-    <Text>{task["title"]}</Text>
+    <text>{task["title"]}</text>
   {/each}
-</List>`
+</list>`
       },
       {
         id: 'row-lifetime',
@@ -154,25 +154,25 @@ rows = state([{"id": n, "title": f"Item {n}"} for n in range(1, 2001)])
       {
         id: 'scrolling',
         title: 'Follow new rows and scroll from code',
-        body: 'follow makes the list start at the bottom and stay there as rows arrive, while the user is at the bottom; if they scroll up to read, it stays put. Inserting rows at the top keeps what was on screen in place. on:top and on:bottom fire when the user reaches either end; on:scroll reports the position, at most once per frame, as {"top": bool, "bottom": bool, "y": pixels, "height": content height}.\n\nWith a ref, code can scroll: scroll_to_end(), which with follow also resumes following, scroll_to_start(), and scroll_to(index), which scrolls just enough to show that row.',
+        body: 'follow makes the list start at the bottom and stay there as rows arrive, while the user is at the bottom; if they scroll up to read, it stays put. Inserting rows at the top keeps what was on screen in place. on:top and on:bottom fire when the user reaches either end; on:scroll reports the position, at most once per frame, as {"top": bool, "bottom": bool, "y": pixels, "height": content height}.\n\nWith a ref, code can scroll: scroll_to_end(), which with follow also resumes following, scroll_to_start(), and scroll_to(index), which scrolls just enough to show that row.\n\n<scroll> accepts the same follow, on:top, on:bottom and on:scroll, for content that is not a list of equal rows: a short log, a long form, a document. With its ref, scroll_to(element) takes the ref of an element inside it and scrolls just enough to show it whole; if it is already visible, nothing moves.',
         language: 'janel',
         code: `<!-- messages is a list state; load_older is a script function; feed = ref(). -->
-<List follow ref={feed} on:top={load_older} on:scroll={at_bottom = event["bottom"]}>
+<list follow ref={feed} on:top={load_older} on:scroll={at_bottom = event["bottom"]}>
   {#each messages as m (m["id"])}
-    <Text>{m["text"]}</Text>
+    <text>{m["text"]}</text>
   {/each}
-</List>
-<Button on:click={feed.scroll_to_end()} enabled={not at_bottom}>Jump to latest</Button>`,
+</list>
+<button on:click={feed.scroll_to_end()} enabled={not at_bottom}>Jump to latest</button>`,
         see: ['refs']
       },
       {
         id: 'changes',
         title: 'How large changes are applied',
-        body: 'Adding rows anywhere, in any amount, is applied in blocks and keeps the scroll position. Removing or moving a few rows is applied one by one, animated with <List animate>. From 64 removals or moves at once, such as sorting or replacing the list, the change is applied in one go: the visible rows are rebuilt and the row that was at the top stays at the top.'
+        body: 'Adding rows anywhere, in any amount, is applied in blocks and keeps the scroll position. Removing or moving a few rows is applied one by one, animated with <list animate>. From 64 removals or moves at once, such as sorting or replacing the list, the change is applied in one go: the visible rows are rebuilt and the row that was at the top stays at the top.'
       }
     ],
     summary: [
-      'Use List for hundreds of rows or more; it creates only what is visible.',
+      'Use <list> for hundreds of rows or more; it creates only what is visible.',
       'One keyed {#each}, no {:else}; keep typed text in state.',
       'follow, on:top, on:scroll and a ref control scrolling.'
     ]
@@ -184,7 +184,8 @@ rows = state([{"id": n, "title": f"Item {n}"} for n in range(1, 2001)])
     learn: [
       'Who owns a reactive collection and why the original is not updated.',
       'When an assignment notifies and when it does not.',
-      'How to group writes with batch and read without subscribing with peek and untracked.'
+      'How to group writes with batch and read without subscribing with peek and untracked.',
+      'How objects with state attributes and @computed methods behave in templates.'
     ],
     sections: [
       {
@@ -264,12 +265,42 @@ watcher.dispose()`,
         pitfalls: [
           'peek and untracked do not freeze data, silence existing subscribers or allow writes from worker threads.'
         ]
+      },
+      {
+        id: 'reactive-objects',
+        title: 'Objects with state of their own',
+        body: 'Not all data is the application’s shared data. An object that exists several times, such as one Camera per camera or one Connection per server, can keep its own state as attributes. A template uses them directly: {camera.frames}, {#if hub.ready} and {#each hub.errors as e} show the value and update. Inside an operation, ask for the value: {camera.frames.value * 2}.\n\n@computed on a method gives each instance its own computed, which lives as long as the instance: camera.health.value in Python, {camera.health} in the template.',
+        language: 'python',
+        code: `# Ordinary Python: state attributes and a derived value per instance.
+from janelkit import computed, state
+
+class Camera:
+    def __init__(self, name):
+        self.name = name
+        self.frames = state(0)
+        self.dropped = state(0)
+
+    @computed
+    def health(self):
+        total = self.frames.value + self.dropped.value
+        return 1.0 if total == 0 else self.frames.value / total
+
+front, back = Camera("front"), Camera("back")
+front.frames.value = 9
+front.dropped.value = 1
+assert front.health.value == 0.9
+assert back.health.value == 1.0     # each instance has its own computed`,
+        pitfalls: [
+          'For the data several views or windows share, prefer a store of janelkit-store: one instance per application, actions and a fresh instance in each test.'
+        ],
+        see: ['store']
       }
     ],
     summary: [
       'state copies collections; change them through .value.',
       'Equal values of the same type do not notify; call notify() after changing custom objects.',
-      'batch groups reactions; peek and untracked read without subscribing.'
+      'batch groups reactions; peek and untracked read without subscribing.',
+      'State attributes work in templates; @computed on a method gives each instance its own value.'
     ]
   }
 ];

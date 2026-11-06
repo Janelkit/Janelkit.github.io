@@ -26,15 +26,15 @@ export const interfaceDocs = [
             ],
             [
               "Element / tag",
-              "One template building block, written with angle brackets, such as <Text> or <Column>."
+              "One template building block, written with angle brackets, such as <text> or <column>."
             ],
             [
               "Container",
-              "An element that arranges children, such as Row, Column, or flex."
+              "An element that arranges children, such as <row>, <column>, or flex."
             ],
             [
               "Control",
-              "A building block that displays information or accepts input: Button, TextField, Checkbox."
+              "A building block that displays information or accepts input: <button>, <textfield>, <checkbox>."
             ],
             [
               "Property / attribute",
@@ -82,8 +82,16 @@ export const interfaceDocs = [
               "A child-to-parent notification declared with event() and emitted with .emit(...)."
             ],
             [
-              "Slot",
+              "<slot>",
               "A position in a child template where the parent can supply interface content."
+            ],
+            [
+              "Built-in element / component tag",
+              "Lowercase tags such as <text> and <button> are built into JanelKit. A tag with a capital letter, such as <TodoItem> or <Pages>, is a component the script imports, from the project or from a package."
+            ],
+            [
+              "Package",
+              "An add-on of the ecosystem, such as janelkit-router or janelkit-store, installed on its own and built only on the public API of the core."
             ]
           ]
         }
@@ -125,6 +133,10 @@ export const interfaceDocs = [
             [
               "Batch",
               "A group of state changes whose dependent effects are flushed together."
+            ],
+            [
+              "Store",
+              "With janelkit-store, a class that holds the data several views or windows share: reactive fields, actions that record each change, and one instance per application."
             ]
           ]
         }
@@ -166,6 +178,14 @@ export const interfaceDocs = [
             [
               "Cleanup",
               "Stopping or releasing something the component started when its owner is destroyed."
+            ],
+            [
+              "Frames",
+              "A stream of images for <video>, pushed from any thread; only the latest one is shown, and images never go through state."
+            ],
+            [
+              "Session",
+              "What lasts one run of an application, or one test mount: packages keep their per-application data in it, including a data folder."
             ]
           ]
         }
@@ -173,7 +193,7 @@ export const interfaceDocs = [
       {
         "id": "use-the-words",
         "title": "Check your understanding",
-        "body": "Imagine a search form. The TextField is a control, the Column around it is a container, and the whole SearchPanel.janel file is a component. Its query is state. bind:value connects the field to that state. A Button click is an event. The function called by that click is a handler. A task can represent the search loading state and result.\n\nPractice: identify those same responsibilities in the first-app guide before learning another API. If a word is unfamiliar, return to this page rather than assuming it means exactly what it means in a browser framework.",
+        "body": "Imagine a search form. The <textfield> is a control, the <column> around it is a container, and the whole SearchPanel.janel file is a component. Its query is state. bind:value connects the field to that state. A <button> click is an event. The function called by that click is a handler. A task can represent the search loading state and result.\n\nPractice: identify those same responsibilities in the first-app guide before learning another API. If a word is unfamiliar, return to this page rather than assuming it means exactly what it means in a browser framework.",
         "explanation": [
           "A framework API is easier to remember when you know which responsibility it serves: data, appearance, communication, or lifetime.",
           "You can use Python modules for ordinary services. Not every function or data structure needs to become a component."

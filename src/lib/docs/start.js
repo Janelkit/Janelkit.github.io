@@ -40,22 +40,22 @@ from janelkit import state
 count = state(0)
 </script>
 
-<Window title="Hello, JanelKit" width={480} height={320}>
-  <Column class="page">
-    <Text>You clicked {count} times.</Text>
-    <Button variant="primary" on:click={count += 1}>Increment</Button>
-  </Column>
-</Window>
+<window title="Hello, JanelKit" width={480} height={320}>
+  <column class="page">
+    <text>You clicked {count} times.</text>
+    <button variant="primary" on:click={count += 1}>Increment</button>
+  </column>
+</window>
 
 <style>
 .page { padding: 24px; gap: 16px; }
 </style>`,
         explanation: [
           'The script is Python. state(0) creates a number the window watches; the name count refers to it.',
-          'The template describes the window: a Column (a vertical stack) containing a Text and a Button.',
+          'The template describes the window: a <column> (a vertical stack) containing a <text> and a <button>.',
           '{count} inside the text shows the current number. When count changes, the sentence updates by itself.',
           'on:click={count += 1} says what happens when the button is clicked: add one to count.',
-          'The style section gives the Column some inner space (padding) and space between its children (gap).'
+          'The style section gives the <column> some inner space (padding) and space between its children (gap).'
         ],
         expected: 'A desktop window titled Hello, JanelKit shows You clicked 0 times. and an Increment button. Each click increases the number.',
         see: ['first-app', 'anatomy']
@@ -63,7 +63,7 @@ count = state(0)
       {
         id: 'not-a-browser',
         title: 'What JanelKit is not',
-        body: 'Some of the syntax looks like the web, because it borrows ideas that work well there: tags in angle brackets, a style section, values in braces. The meaning is different, and assuming otherwise causes most early mistakes.\n\nThe tags are desktop elements, not HTML: <Button> is a JanelKit control and <div> does not exist. Expressions in braces are Python, not JavaScript. Styles are a supported subset of CSS-like properties, not a full browser stylesheet. You never write JavaScript or QML, the language Qt uses to describe interfaces; JanelKit generates the QML internally.',
+        body: 'Some of the syntax looks like the web, because it borrows ideas that work well there: tags in angle brackets, a style section, values in braces. The meaning is different, and assuming otherwise causes most early mistakes.\n\nThe tags are desktop elements, not HTML: <button> is a JanelKit control and <div> does not exist. Expressions in braces are Python, not JavaScript. Styles are a supported subset of CSS-like properties, not a full browser stylesheet. You never write JavaScript or QML, the language Qt uses to describe interfaces; JanelKit generates the QML internally.',
         pitfalls: [
           'Do not reach for HTML tags or attributes; use the built-in elements and their documented properties.',
           'Write Python inside braces: True and False, and, or, not, len(items). JavaScript operators such as === and && are errors.',
@@ -73,7 +73,7 @@ count = state(0)
       {
         id: 'before-you-start',
         title: 'What you need, and what to know before you start',
-        body: 'You need Python 3.10 or newer, and you should be comfortable reading basic Python: variables, functions, lists, dictionaries and imports. No web, HTML or CSS experience is required.\n\nJanelKit is in alpha (version 0.1). During the 0.x series a minor version may change the public API; every change comes with migration notes. A .janel script is ordinary Python and runs with your program’s permissions: there is no sandbox, so never open a .janel file you do not trust.',
+        body: 'You need Python 3.10 or newer, and you should be comfortable reading basic Python: variables, functions, lists, dictionaries and imports. No web, HTML or CSS experience is required.\n\nJanelKit is in alpha (version 0.2). Each series (0.1, 0.2…) may change the public API, always with migration notes and, where possible, janel migrate to update your project. A .janel script is ordinary Python and runs with your program’s permissions: there is no sandbox, so never open a .janel file you do not trust.',
         see: ['installation']
       }
     ],
@@ -114,9 +114,12 @@ source .venv/bin/activate`,
       {
         id: 'install',
         title: 'Install JanelKit',
-        body: 'Install the janelkit package with pip. It brings two dependencies: PySide6, the official Python binding for Qt, which draws the windows; and qasync, which lets asynchronous Python code run alongside Qt. It also installs the janel command, which creates and checks projects.\n\nEverything the Guide teaches is in this one package, including every built-in control. Optional packages exist for dialogs, translations and editor support, but you do not need them to start.',
+        body: 'Install the janelkit package with pip. It brings two dependencies: PySide6-Essentials, the essential modules of the official Python binding for Qt, which draw the windows (about 200 MB, without the Add-ons); and qasync, which lets asynchronous Python code run alongside Qt. It also installs the janel command, which creates and checks projects.\n\nEverything the Guide teaches is in this one package, including every built-in control. The packages of the ecosystem add navigation between screens, shared data, system dialogs, translations and editor support, but you do not need them to start.',
         language: 'shell',
         code: 'pip install janelkit',
+        pitfalls: [
+          'If your application also uses Qt modules from the Add-ons, such as QtMultimedia to open cameras, QtCharts or QtWebEngine, install them yourself: pip install PySide6-Addons.'
+        ],
         see: ['overview']
       },
       {
@@ -126,7 +129,7 @@ source .venv/bin/activate`,
         language: 'shell',
         code: `python -c "import janelkit; print(janelkit.__version__)"
 janel --version`,
-        expected: 'Both commands print the installed version, such as 0.1.0. janel --help lists the commands: new, parse, compile, dev and build (in version 0.1 their descriptions are in Spanish).',
+        expected: 'Both commands print the installed version, such as 0.2.0.0. janel --help lists the commands: new, parse, compile, dev, build and migrate (their descriptions are in Spanish for now).',
         pitfalls: [
           'janel: command not found usually means the virtual environment is not active in this terminal. Activate it and try again.',
           'If import janelkit fails but pip said it installed, you probably installed into a different Python. Use python -m pip install janelkit with the same python you run.'
@@ -136,12 +139,12 @@ janel --version`,
         id: 'editor',
         title: 'Optional: color .janel files in your editor',
         body: 'Any text editor works. In Visual Studio Code, the JanelKit extension colors the three languages of a .janel file (Python, the template and the styles) and adds comment, bracket and folding support. It only colors code; errors are reported by the janel command.',
-        see: ['janelkit-vscode']
+        see: ['vscode']
       }
     ],
     summary: [
       'Work inside an activated virtual environment.',
-      'pip install janelkit installs the framework, PySide6, qasync and the janel command.',
+      'pip install janelkit installs the framework, PySide6-Essentials, qasync and the janel command.',
       'Check with import janelkit and janel --help before creating a project.'
     ]
   },
@@ -160,7 +163,7 @@ janel --version`,
       {
         id: 'create-project',
         title: '1. Create a project',
-        body: 'Run these commands in a terminal, with your virtual environment active. janel new creates a folder with a working starter application. cd moves into it. python main.py runs the application.\n\nThe starter is a small demo: a greeting that uses what you type, a click counter and a theme button. In version 0.1 its texts are in Spanish; that is only the sample content.',
+        body: 'Run these commands in a terminal, with your virtual environment active. janel new creates a folder with a working starter application. cd moves into it. python main.py runs the application.\n\nThe starter is a small demo: a greeting that uses what you type, a click counter and a theme button. Its texts are in Spanish; that is only the sample content.',
         language: 'shell',
         code: `janel new first-counter
 cd first-counter
@@ -179,7 +182,7 @@ python main.py`,
           ['main.py', 'Starts the application. You rarely change it.'],
           ['src/App.janel', 'The root component: the main window of your application.'],
           ['src/components/', 'Smaller reusable components. The starter has Counter.janel.'],
-          ['src/pages/', 'Screens used with navigation. Empty at first.'],
+          ['src/pages/', 'Screens, such as the pages of a janelkit-router stack. Empty at first.'],
           ['src/services/', 'Ordinary Python modules without interface, such as users.py. Business logic belongs here.'],
           ['assets/', 'Images and other files your application uses.'],
           ['pyproject.toml, README.md, .gitignore', 'Project metadata, notes and version-control settings.']
@@ -219,15 +222,15 @@ def reset():
     count.value = 0
 </script>
 
-<Window title="My first counter" width={420} height={260}>
-  <Column class="page">
-    <Text>You clicked {count} times.</Text>
-    <Row class="actions">
-      <Button variant="primary" on:click={increment}>Increment</Button>
-      <Button on:click={reset} enabled={count > 0}>Reset</Button>
-    </Row>
-  </Column>
-</Window>
+<window title="My first counter" width={420} height={260}>
+  <column class="page">
+    <text>You clicked {count} times.</text>
+    <row class="actions">
+      <button variant="primary" on:click={increment}>Increment</button>
+      <button on:click={reset} enabled={count > 0}>Reset</button>
+    </row>
+  </column>
+</window>
 
 <style>
 .page { padding: 24px; gap: 16px; }
@@ -239,7 +242,7 @@ def reset():
           'In the template you write count, not count.value: JanelKit reads the value for you.',
           'on:click={increment} connects the button to the function. Defining a function does not run it; the click does.',
           'enabled={count > 0} is recalculated whenever count changes, so Reset turns on and off by itself.',
-          'Row places the two buttons side by side; Column stacks the sentence above them.'
+          '<row> places the two buttons side by side; <column> stacks the sentence above them.'
         ],
         see: ['state', 'events']
       },
@@ -275,7 +278,7 @@ def reset():
       {
         id: 'extend',
         title: '7. Practice: add a Decrement button',
-        body: 'Add a Decrement button that never takes the count below zero. Write the rule in a new function in the existing script and add one more Button inside the Row. Do not add a second script or a second Window.\n\nIf something fails, read the terminal: errors give the file, line and column, and often suggest the name you meant. Compilation catches structural mistakes such as a misspelled element; an error inside a function only appears when that function runs.',
+        body: 'Add a Decrement button that never takes the count below zero. Write the rule in a new function in the existing script and add one more <button> inside the <row>. Do not add a second script or a second <window>.\n\nIf something fails, read the terminal: errors give the file, line and column, and often suggest the name you meant. Compilation catches structural mistakes such as a misspelled element; an error inside a function only appears when that function runs.',
         pitfalls: [
           'In Python functions write count.value; in the template write count.',
           'A function that is never connected with on:click never runs.',
@@ -297,7 +300,7 @@ def reset():
       'The three sections of a .janel file and which ones are required.',
       'When the script runs, and what it may contain.',
       'How the template forms a tree with a single root.',
-      'Where Window may and may not be used.'
+      'Where <window> may and may not be used.'
     ],
     sections: [
       {
@@ -322,14 +325,14 @@ from services.users import display_name   # src/services/users.py
 name = state("")
 </script>
 
-<Column padding={24} gap={12}>
-  <TextField bind:value={name} placeholder="Your name" label="Your name" />
-  <Text>Hello, {display_name(name)}</Text>
-</Column>`,
+<column padding={24} gap={12}>
+  <textfield bind:value={name} placeholder="Your name" label="Your name" />
+  <text>Hello, {display_name(name)}</text>
+</column>`,
         explanation: [
           'services/users.py is an ordinary Python module with no interface. The starter project includes it.',
           'name = state("") runs once, when this component is created.',
-          'The Text calls display_name with the current name every time name changes. The script itself does not run again.'
+          'The <text> calls display_name with the current name every time name changes. The script itself does not run again.'
         ],
         expected: 'In a project created with janel new, the window first shows Hello, invitado (the starter’s default name, in Spanish). Typing ada lovelace changes it to Hello, Ada Lovelace.',
         pitfalls: [
@@ -340,29 +343,29 @@ name = state("")
       {
         id: 'template-tree',
         title: 'The template is a tree with one root',
-        body: 'Elements contain other elements, like folders inside folders. An element that contains others is their parent; the elements inside are its children. Indentation only helps people read; the tags decide the nesting. A paired tag such as <Column> … </Column> encloses its children; an element with no children can close itself with />.\n\nThe template must have exactly one root, the element that contains everything else. Comments are written <!-- like this --> and do not appear in the window.',
+        body: 'Elements contain other elements, like folders inside folders. An element that contains others is their parent; the elements inside are its children. Indentation only helps people read; the tags decide the nesting. A paired tag such as <column> … </column> encloses its children; an element with no children can close itself with />.\n\nThe template must have exactly one root, the element that contains everything else. Comments are written <!-- like this --> and do not appear in the window.',
         language: 'janel', standalone: true,
         code: `<!-- Window is the root; everything else is inside it. -->
-<Window title="A tree" width={360} height={220}>
-  <Column padding={24} gap={8}>
-    <Text>First child of the Column</Text>
-    <Row gap={8}>
-      <Button>Left</Button>
-      <Button>Right</Button>
-    </Row>
-  </Column>
-</Window>`,
+<window title="A tree" width={360} height={220}>
+  <column padding={24} gap={8}>
+    <text>First child of the Column</text>
+    <row gap={8}>
+      <button>Left</button>
+      <button>Right</button>
+    </row>
+  </column>
+</window>`,
         explanation: [
-          'Window is the root. It has one child, a Column.',
-          'The Column has two children: a Text and a Row.',
-          'The Row has two children, the buttons, placed side by side.'
+          '<window> is the root. It has one child, a <column>.',
+          'The <column> has two children: a <text> and a <row>.',
+          'The <row> has two children, the buttons, placed side by side.'
         ],
         expected: 'A window with a line of text and, below it, two buttons next to each other.'
       },
       {
         id: 'window-root',
-        title: 'Window belongs only to the main component',
-        body: 'The root component of the application, src/App.janel, may use Window as its root to set the title and size. If it does not, JanelKit wraps it in a 640 by 480 window and the content fills it. Components used inside other components must not have Window as their root: they become part of a window, they do not open one.\n\nTo open a second window, use open_window, covered with navigation.',
+        title: '<window> belongs only to the main component',
+        body: 'The root component of the application, src/App.janel, may use <window> as its root to set the title and size. If it does not, JanelKit wraps it in a 640 by 480 window and the content fills it. Components used inside other components must not have <window> as their root: they become part of a window, they do not open one.\n\nTo open a second window, use open_window, covered with navigation.',
         language: 'janel', standalone: true,
         code: `<script lang="python">
 from janelkit import state
@@ -370,21 +373,21 @@ count = state(0)
 </script>
 
 <!-- No Window here: JanelKit opens a 640 × 480 window for it. -->
-<Column padding={24} gap={12}>
-  <Text>Count: {count}</Text>
-  <Button on:click={count += 1}>Add one</Button>
-</Column>`,
+<column padding={24} gap={12}>
+  <text>Count: {count}</text>
+  <button on:click={count += 1}>Add one</button>
+</column>`,
         expected: 'A 640 by 480 window with the count and an Add one button.',
-        see: ['navigation']
+        see: ['windows']
       },
       {
         id: 'style-section',
         title: 'The style section is local to the component',
         body: 'Style rules apply to the elements written in this component’s template, never to the inside of another component. A rule such as .page { padding: 24px; } matches every element with class="page". Note the dot: it belongs in the rule, not in the class attribute.',
         language: 'janel',
-        code: `<Column class="page">
-  <Text>Styled by the rule below</Text>
-</Column>
+        code: `<column class="page">
+  <text>Styled by the rule below</text>
+</column>
 
 <style>
 .page { padding: 24px; gap: 12px; }
@@ -394,18 +397,18 @@ count = state(0)
       {
         id: 'practice',
         title: 'Practice: find the parts',
-        body: 'Open the src/App.janel that janel new created. Identify the script, the root element and the style section. Then open src/components/Counter.janel: its root is a Row, not a Window, because it is used inside App.janel.',
+        body: 'Open the src/App.janel that janel new created. Identify the script, the root element and the style section. Then open src/components/Counter.janel: its root is a <row>, not a <window>, because it is used inside App.janel.',
         pitfalls: [
           'Two script or two style sections in one file are an error. Merge them.',
-          'Two top-level elements are an error. Wrap them in a Column or Row.',
-          'A Window inside a component that another component uses is an error.'
+          'Two top-level elements are an error. Wrap them in a <column> or <row>.',
+          'A <window> inside a component that another component uses is an error.'
         ]
       }
     ],
     summary: [
       'A .janel file has a template and, optionally, one script and one style section.',
       'The script runs once per instance; later updates call its functions.',
-      'The template is a tree with one root; only the main component may use Window.'
+      'The template is a tree with one root; only the main component may use <window>.'
     ]
   }
 ];

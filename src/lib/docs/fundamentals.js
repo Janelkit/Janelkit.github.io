@@ -9,7 +9,7 @@ export const fundamentalsDocs = [
     description: 'Every element you can write in a template, grouped by purpose. All of them ship with janelkit.',
     learn: [
       'Which elements exist and what each family is for.',
-      'Why some tags start with a capital letter and one does not.',
+      'Why built-in tags are lowercase and imported ones start with a capital letter.',
       'The properties every element accepts.',
       'How text between tags becomes a caption.'
     ],
@@ -17,7 +17,7 @@ export const fundamentalsDocs = [
       {
         id: 'all-included',
         title: 'Everything here is already installed',
-        body: 'Every element on this page is part of the core janelkit package. You do not install anything else and you do not import elements in the script: write <Button> in the template and it works. Optional packages add system services, such as file dialogs in janelkit-desktop, never controls.\n\nTags are case-sensitive. Built-in controls and your own components start with a capital letter: Button, TextField, TodoItem. Lowercase tags are reserved for base elements, the building blocks used to create new controls; today there is one, <flex>. An unknown tag, property or event is a compile error that lists the valid options and suggests the closest name.',
+        body: 'Every element on this page is part of the core janelkit package. You do not install anything else and you do not import elements in the script: write <button> in the template and it works. The packages of the ecosystem add services, and a few components of their own such as <Pages> in janelkit-router, but every control is here.\n\nTags are case-sensitive. As in HTML, lowercase tags are what the platform gives you: the built-in elements, such as <text>, <button> and <flex>. A tag that starts with a capital letter is a component your script imports, from your project or from a package: <TodoItem>, <Pages>. So a component of yours may be called Button without clashing with <button>. An unknown tag, property or event is a compile error that lists the valid options and suggests the closest name.',
         see: ['overview']
       },
       {
@@ -25,13 +25,13 @@ export const fundamentalsDocs = [
         title: 'Elements grouped by what they are for',
         body: 'Choose an element by the job it does. The next chapters use these elements, and Forms explains every input control in detail.',
         table: { headers: ['Family', 'Elements', 'Use them to'], rows: [
-          ['Window', 'Window', 'Open the application window, with its title and size.'],
-          ['Layout', 'Column, Row, flex, Spacer, Scroll', 'Arrange other elements vertically, horizontally, with free space, or in a scrolling area.'],
-          ['Text and media', 'Text, Image, Video', 'Show text (plain, Markdown or HTML), pictures, or live video frames.'],
-          ['Actions', 'Button, Shortcut', 'Run something on a click or on a key combination.'],
-          ['Input', 'TextField, TextArea, Checkbox, Switch, Slider, Select, RadioGroup, Tabs', 'Let the user type text, toggle a value, pick a number or choose an option.'],
-          ['Feedback', 'ProgressBar', 'Show progress, or that work is ongoing.'],
-          ['Collections', 'List', 'Show hundreds or thousands of rows efficiently.']
+          ['Window', '<window>', 'Open the application window, with its title, size and screen.'],
+          ['Layout', '<column>, <row>, flex, <spacer>, <scroll>', 'Arrange other elements vertically, horizontally, with free space, or in a scrolling area.'],
+          ['Text and media', '<text>, <image>, <video>', 'Show text (plain, Markdown or HTML), pictures, or live video frames.'],
+          ['Actions', '<button>, <shortcut>', 'Run something on a click or on a key combination.'],
+          ['Input', '<textfield>, <textarea>, <checkbox>, <switch>, <slider>, <select>, <radiogroup>, <tabs>', 'Let the user type text, toggle a value, pick a number or choose an option.'],
+          ['Feedback', '<progressbar>', 'Show progress, or that work is ongoing.'],
+          ['Collections', '<list>', 'Show hundreds or thousands of rows efficiently.']
         ] }
       },
       {
@@ -45,30 +45,30 @@ progress = state(0.3)
 dark = state(False)
 </script>
 
-<Window title="Element tour" width={460} height={320}>
-  <Column padding={24} gap={12}>
-    <Text format="markdown">**Built-in elements** need no imports.</Text>
-    <ProgressBar value={progress} />
-    <Row gap={8}>
-      <Button on:click={progress = min(progress + 0.1, 1)}>More progress</Button>
-      <Spacer />
-      <Switch bind:checked={dark}>Dark mode</Switch>
-    </Row>
-    <Text>Progress: {progress:.0%} · dark mode {"on" if dark else "off"}</Text>
-  </Column>
-</Window>`,
+<window title="Element tour" width={460} height={320}>
+  <column padding={24} gap={12}>
+    <text format="markdown">**Built-in elements** need no imports.</text>
+    <progressbar value={progress} />
+    <row gap={8}>
+      <button on:click={progress = min(progress + 0.1, 1)}>More progress</button>
+      <spacer />
+      <switch bind:checked={dark}>Dark mode</switch>
+    </row>
+    <text>Progress: {progress:.0%} · dark mode {"on" if dark else "off"}</text>
+  </column>
+</window>`,
         explanation: [
-          'Text with format="markdown" renders the two asterisks as bold text.',
-          'ProgressBar goes from 0 to its max, which defaults to 1, so 0.3 shows a bar 30 % full.',
-          'Spacer takes the free space in the Row and pushes the Switch to the right edge.',
-          'The Switch writes True or False into dark; the last line reads both states.'
+          '<text> with format="markdown" renders the two asterisks as bold text.',
+          '<progressbar> goes from 0 to its max, which defaults to 1, so 0.3 shows a bar 30 % full.',
+          '<spacer> takes the free space in the <row> and pushes the <switch> to the right edge.',
+          'The <switch> writes True or False into dark; the last line reads both states.'
         ],
-        expected: 'The bar starts 30 % full and the last line says Progress: 30% · dark mode off. More progress fills the bar in steps until 100%. The Switch changes the last line to dark mode on (it does not change the theme; that is shown in Styles).'
+        expected: 'The bar starts 30 % full and the last line says Progress: 30% · dark mode off. More progress fills the bar in steps until 100%. The <switch> changes the last line to dark mode on (it does not change the theme; that is shown in Styles).'
       },
       {
         id: 'common-properties',
         title: 'Properties every element accepts',
-        body: 'Besides its own properties, every element except Window accepts the ones below. id, class and style are written the same way on any element.',
+        body: 'Besides its own properties, every element except <window> accepts the ones below. id, class and style are written the same way on any element.',
         table: { headers: ['Property', 'What it does'], rows: [
           ['width, height', 'Preferred size in pixels, or a percentage of the container.'],
           ['flex', 'Share of the free space along the container’s direction. Explained in Layout.'],
@@ -83,13 +83,13 @@ dark = state(False)
       {
         id: 'text-content',
         title: 'Text between tags is the caption',
-        body: 'For Text, Button and Checkbox, the text between the tags is what they show: <Button>Save</Button>. It can include expressions: <Button>Clicks: {count}</Button>. Spaces and line breaks are collapsed into single spaces, so you can wrap long text over several lines. Loose text directly inside a container becomes a Text.\n\nText shows plain text by default. format="markdown" renders bold, italics, links, code and lists; format="html" renders Qt’s subset of HTML. Text cannot be selected by default, like a label in a desktop application; add selectable to let the user select and copy it.',
+        body: 'For <text>, <button> and <checkbox>, the text between the tags is what they show: <button>Save</button>. It can include expressions: <button>Clicks: {count}</button>. Spaces and line breaks are collapsed into single spaces, so you can wrap long text over several lines. Loose text directly inside a container becomes a <text>.\n\n<text> shows plain text by default. format="markdown" renders bold, italics, links, code and lists, and shows any HTML inside the text as written, so text written by other people can be shown directly; format="html" renders Qt’s subset of HTML. Clicking a link emits on:link with its URL; if nobody listens, it opens in the browser. <text> cannot be selected by default, like a label in a desktop application; add selectable to let the user select and copy it.',
         language: 'janel',
-        code: `<Text>Plain text</Text>
-<Text format="markdown">Some **bold** and a [link](https://example.com)</Text>
-<Text selectable>Order 4815-16 (the user can copy this)</Text>`,
+        code: `<text>Plain text</text>
+<text format="markdown">Some **bold** and a [link](https://example.com)</text>
+<text selectable>Order 4815-16 (the user can copy this)</text>`,
         pitfalls: [
-          'Qt’s Markdown also accepts HTML. Never show text from other people with format="markdown" or "html" without escaping & and < first; prefer plain Text.'
+          'format="html" applies the HTML in the text. Never show text from other people with format="html"; use plain text or format="markdown", which does not interpret HTML.'
         ]
       },
       {
@@ -97,33 +97,33 @@ dark = state(False)
         title: 'Every element at a glance',
         body: 'The table lists each element with its own properties, its events and the values it can bind. Events written with a name in parentheses send that value to your handler, for example on:submit(text). Do not memorize it; come back when you need a detail.',
         table: { headers: ['Element', 'Properties', 'Events', 'bind:'], rows: [
-          ['Window', 'title, width, height, minWidth, minHeight, background', 'on:activate, on:deactivate', '—'],
-          ['Column, Row', 'gap, padding', 'on:click and pointer and keyboard events', '—'],
+          ['<window>', 'title, width, height, minWidth, minHeight, background, screen, fullscreen', 'on:activate, on:deactivate', '—'],
+          ['<column>, <row>', 'gap, padding', 'on:click and pointer and keyboard events', '—'],
           ['flex', 'direction, wrap, gap, padding, align, justify, as, tabindex, disabled, title, checked, selected, expanded, style', 'on:click, pointer, wheel, keyboard, focus and resize events', '—'],
-          ['Scroll', 'gap, padding', '—', '—'],
-          ['List', 'gap, padding, animate, follow', 'on:top, on:bottom, on:scroll(info)', '—'],
-          ['Text', 'text, color, format (plain, markdown, html), selectable', 'on:link(url)', '—'],
-          ['Button', 'text, variant (default, primary, danger, ghost), flat', 'on:click', '—'],
-          ['TextField', 'value, placeholder, readonly', 'on:input(text), on:submit(text), on:keydown, on:keyup, on:focus, on:blur', 'value'],
-          ['TextArea', 'value, placeholder, readonly', 'on:input(text), on:keydown, on:keyup, on:focus, on:blur', 'value'],
-          ['Checkbox', 'checked, text', 'on:change(checked)', 'checked'],
-          ['Switch', 'checked, text', 'on:change(checked)', 'checked'],
-          ['Slider', 'value, min (0), max (100), step', 'on:change(value)', 'value'],
-          ['Select', 'options, value, placeholder', 'on:change(value), on:keydown, on:keyup, on:focus, on:blur', 'value'],
-          ['RadioGroup', 'options, value, horizontal', 'on:change(value)', 'value'],
-          ['Tabs', 'options, value', 'on:change(value)', 'value'],
-          ['ProgressBar', 'value, max (1), indeterminate', '—', '—'],
-          ['Image', 'src, fit (contain, cover, fill, none), alt', '—', '—'],
-          ['Video', 'source (a Frames object), fit (contain, cover, fill)', '—', '—'],
-          ['Shortcut', 'keys', 'on:activate', '—'],
-          ['Spacer', '—', '—', '—']
+          ['<scroll>', 'gap, padding, follow', 'on:top, on:bottom, on:scroll(info)', '—'],
+          ['<list>', 'gap, padding, animate, follow', 'on:top, on:bottom, on:scroll(info)', '—'],
+          ['<text>', 'text, color, format (plain, markdown, html), selectable', 'on:link(url)', '—'],
+          ['<button>', 'text, variant (default, primary, danger, ghost), flat', 'on:click', '—'],
+          ['<textfield>', 'value, placeholder, readonly', 'on:input(text), on:submit(text), on:keydown, on:keyup, on:focus, on:blur', 'value'],
+          ['<textarea>', 'value, placeholder, readonly', 'on:input(text), on:keydown, on:keyup, on:focus, on:blur', 'value'],
+          ['<checkbox>', 'checked, text', 'on:change(checked)', 'checked'],
+          ['<switch>', 'checked, text', 'on:change(checked)', 'checked'],
+          ['<slider>', 'value, min (0), max (100), step', 'on:change(value)', 'value'],
+          ['<select>', 'options, value, placeholder', 'on:change(value), on:keydown, on:keyup, on:focus, on:blur', 'value'],
+          ['<radiogroup>', 'options, value, horizontal', 'on:change(value)', 'value'],
+          ['<tabs>', 'options, value', 'on:change(value)', 'value'],
+          ['<progressbar>', 'value, max (1), indeterminate', '—', '—'],
+          ['<image>', 'src, fit (contain, cover, fill, none), alt', '—', '—'],
+          ['<video>', 'source (a Frames object), fit (contain, cover, fill)', 'on:click, on:dblclick, on:contextmenu and pointer events, with image_x and image_y', '—'],
+          ['<shortcut>', 'keys', 'on:activate', '—'],
+          ['<spacer>', '—', '—', '—']
         ] },
-        see: ['forms', 'layout', 'large-lists']
+        see: ['forms', 'layout', 'large-lists', 'video']
       }
     ],
     summary: [
       'All elements are in the core: no install, no import.',
-      'Capitalized tags are controls and components; lowercase flex is the base box.',
+      'Built-in elements are lowercase; a tag with a capital letter is an imported component.',
       'Unknown tags and properties are compile errors with suggestions.'
     ]
   },
@@ -160,14 +160,14 @@ def add_one():
     count.value += 1
 </script>
 
-<Window title="Reactive counter" width={420} height={240}>
-  <Column padding={24} gap={12}>
-    <Text>Count: {count}</Text>
-    <Text>Doubled: {count * 2}</Text>
-    <Button on:click={add_one}>Add one</Button>
-    <Button on:click={count = 0}>Reset</Button>
-  </Column>
-</Window>`,
+<window title="Reactive counter" width={420} height={240}>
+  <column padding={24} gap={12}>
+    <text>Count: {count}</text>
+    <text>Doubled: {count * 2}</text>
+    <button on:click={add_one}>Add one</button>
+    <button on:click={count = 0}>Reset</button>
+  </column>
+</window>`,
         explanation: [
           'count = state(0) creates the container. The name count refers to the container, not to the number.',
           'In Python, the number is count.value. add_one reads it and writes it back increased by one.',
@@ -215,15 +215,15 @@ def add():
     items.value.append(f"Item {len(items.value) + 1}")
 </script>
 
-<Window title="Shopping" width={360} height={280}>
-  <Column padding={24} gap={8}>
-    <Text>{len(items)} items: {", ".join(items)}</Text>
-    <Button on:click={add}>Add an item</Button>
-    <Button on:click={items.clear()}>Clear</Button>
-  </Column>
-</Window>`,
+<window title="Shopping" width={360} height={280}>
+  <column padding={24} gap={8}>
+    <text>{len(items)} items: {", ".join(items)}</text>
+    <button on:click={add}>Add an item</button>
+    <button on:click={items.clear()}>Clear</button>
+  </column>
+</window>`,
         explanation: [
-          'items.value.append(...) changes the list in place; the Text that reads it updates.',
+          'items.value.append(...) changes the list in place; the <text> that reads it updates.',
           'In the template, items is the list itself, so len(items) and ", ".join(items) work as usual.',
           'on:click={items.clear()} calls a list method as an action when the button is clicked.'
         ],
@@ -282,9 +282,9 @@ def add():
         ] },
         language: 'janel',
         code: `<!-- count and enabled are defined in the script. -->
-<Button text="Save" enabled={count > 0} />
-<Button flat>Quiet action</Button>
-<Button {enabled}>Continue</Button>`,
+<button text="Save" enabled={count > 0} />
+<button flat>Quiet action</button>
+<button {enabled}>Continue</button>`,
         pitfalls: [
           'enabled="False" is the text "False", not a Boolean. Write enabled={False}.'
         ]
@@ -295,7 +295,7 @@ def add():
         body: 'A plain name that refers to state, a computed value or a component prop is replaced by its value: {count + 1} means count.value + 1. Only direct names are unwrapped. If a state lives on another object, such as a module, reach its value explicitly with .value, or import the state by name so it becomes a direct name.\n\nNames are looked up when the expression runs. Inside a row of a list, a lambda always sees that row’s item.',
         language: 'janel',
         code: `<!-- prefs is a module that defines theme = state("light"). -->
-<Text>Theme: {prefs.theme.value}</Text>`,
+<text>Theme: {prefs.theme.value}</text>`,
         pitfalls: [
           'Inside a template lambda, state names are already numbers or strings, so lambda: count.set(0) fails. Pass a script function instead.'
         ]
@@ -312,14 +312,14 @@ ratio = state(0.256)
 name = state("Ada")
 </script>
 
-<Window title="Formatting" width={380} height={240}>
-  <Column padding={24} gap={8}>
-    <Text>Price: {price:,.2f}</Text>
-    <Text>Share: {ratio:.0%}</Text>
-    <Text>Name: {name!r}</Text>
-    <Button on:click={price += 100}>Raise the price</Button>
-  </Column>
-</Window>`,
+<window title="Formatting" width={380} height={240}>
+  <column padding={24} gap={8}>
+    <text>Price: {price:,.2f}</text>
+    <text>Share: {ratio:.0%}</text>
+    <text>Name: {name!r}</text>
+    <button on:click={price += 100}>Raise the price</button>
+  </column>
+</window>`,
         expected: 'Price: 1,234.50, Share: 26% and Name: \'Ada\'. Raise the price changes the first line to Price: 1,334.50.',
         explanation: [
           ':,.2f adds thousands separators and keeps two decimals.',
@@ -331,10 +331,10 @@ name = state("Ada")
       {
         id: 'mistakes',
         title: 'What happens when an expression is wrong',
-        body: 'A name that the script does not define is a compile error that points at the line and suggests the closest name. In version 0.1 diagnostics are written in Spanish, for example: \'cuont\' no está definido — ¿quisiste decir \'count\'? (\'cuont\' is not defined, did you mean \'count\'?). This check is turned off if the script uses from x import * or globals(). An expression that raises an exception while running, such as formatting text with .2f, is logged with its file and line, and the application keeps running.\n\nExpressions are trusted code, like the script. Never build template source from text the user typed.',
+        body: 'A name that the script does not define is a compile error that points at the line and suggests the closest name. Diagnostics are written in Spanish for now, for example: \'cuont\' no está definido — ¿quisiste decir \'count\'? (\'cuont\' is not defined, did you mean \'count\'?). This check is turned off if the script uses from x import * or globals(). An expression that raises an exception while running, such as formatting text with .2f, is logged with its file and line, and the application keeps running.\n\nExpressions are trusted code, like the script. Never build template source from text the user typed.',
         steps: [
           'Misspell a state name in a {…} and run the app: read the suggestion in the terminal.',
-          'Write {"Discount" if price > 15 else "Regular price"} in a Text and change price to cross 15.'
+          'Write {"Discount" if price > 15 else "Regular price"} in a <text> and change price to cross 15.'
         ],
         see: ['troubleshooting']
       }
@@ -374,22 +374,22 @@ def moved(value):
     last.value = f"slider at {value:.0f}"
 </script>
 
-<Window title="Events" width={460} height={300}>
-  <Column padding={24} gap={12}>
-    <Text>Count: {count}</Text>
-    <Row gap={8}>
-      <Button on:click={count += 1}>Add one</Button>
-      <Button on:click={reset}>Reset</Button>
-    </Row>
-    <Slider min={0} max={10} step={1} on:change={moved} label="Level" />
-    <Text>Last action: {last}</Text>
-  </Column>
-</Window>`,
+<window title="Events" width={460} height={300}>
+  <column padding={24} gap={12}>
+    <text>Count: {count}</text>
+    <row gap={8}>
+      <button on:click={count += 1}>Add one</button>
+      <button on:click={reset}>Reset</button>
+    </row>
+    <slider min={0} max={10} step={1} on:change={moved} label="Level" />
+    <text>Last action: {last}</text>
+  </column>
+</window>`,
         explanation: [
           'on:click={count += 1} is an action written in the template. It runs as is on each click.',
           'on:click={reset} passes the function itself. Defining reset does nothing; each click calls it.',
-          'Slider sends its new value with on:change, so moved receives it as its argument.',
-          'Handlers change state; the Text elements that read that state update by themselves.'
+          '<slider> sends its new value with on:change, so moved receives it as its argument.',
+          'Handlers change state; the <text> elements that read that state update by themselves.'
         ],
         expected: 'Add one increases the count, Reset sets it to 0 and the last line to Last action: reset. Moving the slider to 3 shows Last action: slider at 3.'
       },
@@ -412,11 +412,11 @@ def moved(value):
       {
         id: 'event-values',
         title: 'What each control sends',
-        body: 'Many events carry a value. A TextField sends its text with on:input and on:submit; a Checkbox or Switch sends True or False with on:change; Slider, Select, RadioGroup and Tabs send the new value. A handler function receives the arguments its signature accepts, so def submit(): and def submit(text): both work for on:submit.\n\nIn an action, the value is available as event: a single value, or a tuple when the event has several. It is not a browser event object.',
+        body: 'Many events carry a value. A <textfield> sends its text with on:input and on:submit; a <checkbox> or <switch> sends True or False with on:change; <slider>, <select>, <radiogroup> and <tabs> send the new value. A handler function receives the arguments its signature accepts, so def submit(): and def submit(text): both work for on:submit.\n\nIn an action, the value is available as event: a single value, or a tuple when the event has several. It is not a browser event object.',
         language: 'janel',
         code: `<!-- done is a Boolean state; query is a text state. -->
-<Checkbox checked={done} on:change={done = event}>Done</Checkbox>
-<TextField value={query} on:submit={search(event)} label="Search" />`,
+<checkbox checked={done} on:change={done = event}>Done</checkbox>
+<textfield value={query} on:submit={search(event)} label="Search" />`,
         pitfalls: [
           'Do not expect event.target.value; event is the value itself.',
           'Inside an action, event hides any script variable with the same name.'
@@ -451,14 +451,14 @@ def moved(value):
     learn: [
       'What bind:value and bind:checked do, and when to use them.',
       'Which input control matches each kind of value.',
-      'How options work in Select, RadioGroup and Tabs.',
+      'How options work in <select>, <radiogroup> and <tabs>.',
       'How to react to keys such as Enter and Escape in a field.'
     ],
     sections: [
       {
         id: 'two-way-binding',
         title: 'bind: keeps a control and a state in step',
-        body: 'value={name} sends data one way, from state to the control. bind:value={name} sends it both ways: the control shows the state, and every edit the user makes is written back to it. Use bind:checked for Checkbox and Switch, and bind:value for the rest. Anything else that reads the state, such as a summary line, follows the user’s input without any handler.',
+        body: 'value={name} sends data one way, from state to the control. bind:value={name} sends it both ways: the control shows the state, and every edit the user makes is written back to it. Use bind:checked for <checkbox> and <switch>, and bind:value for the rest. Anything else that reads the state, such as a summary line, follows the user’s input without any handler.',
         language: 'janel', standalone: true,
         code: `<script lang="python">
 from janelkit import state
@@ -473,17 +473,17 @@ def greet(text):
     message.value = f"Hello, {text.strip() or 'friend'}!"
 </script>
 
-<Window title="A small form" width={480} height={420}>
-  <Column padding={24} gap={12}>
-    <TextField bind:value={name} on:submit={greet} placeholder="Ada" label="Your name" />
-    <Select options={["S", "M", "L"]} bind:value={size} label="Size" />
-    <Slider bind:value={volume} min={0} max={100} step={10} label="Volume" />
-    <Checkbox bind:checked={agree}>I agree</Checkbox>
-    <Text>{name or "Nobody"} · size {size} · volume {volume:.0f} · {"agreed" if agree else "not agreed"}</Text>
-    <Text>{message}</Text>
-    <Button on:click={name = ""; agree = False}>Clear</Button>
-  </Column>
-</Window>`,
+<window title="A small form" width={480} height={420}>
+  <column padding={24} gap={12}>
+    <textfield bind:value={name} on:submit={greet} placeholder="Ada" label="Your name" />
+    <select options={["S", "M", "L"]} bind:value={size} label="Size" />
+    <slider bind:value={volume} min={0} max={100} step={10} label="Volume" />
+    <checkbox bind:checked={agree}>I agree</checkbox>
+    <text>{name or "Nobody"} · size {size} · volume {volume:.0f} · {"agreed" if agree else "not agreed"}</text>
+    <text>{message}</text>
+    <button on:click={name = ""; agree = False}>Clear</button>
+  </column>
+</window>`,
         explanation: [
           'Each bind: connects one control to one state. Typing, choosing, sliding and ticking all write to state immediately.',
           'The summary line reads the four states, so it changes as the user works.',
@@ -501,21 +501,21 @@ def greet(text):
         title: 'Choose the control by the kind of value',
         body: 'The right control makes the expected value obvious to the user. Pick it by the type of data you need.',
         table: { headers: ['You need', 'Use', 'Binding'], rows: [
-          ['A short line of text', 'TextField', 'bind:value (str)'],
-          ['Several lines of text', 'TextArea', 'bind:value (str)'],
-          ['Yes or no, in a form', 'Checkbox', 'bind:checked (bool)'],
-          ['On or off, a setting that applies at once', 'Switch', 'bind:checked (bool)'],
-          ['A number in a range', 'Slider (min, max, step)', 'bind:value (number)'],
-          ['One option from a long list', 'Select', 'bind:value'],
-          ['One option from a few, all visible', 'RadioGroup', 'bind:value'],
-          ['Which section is shown', 'Tabs', 'bind:value'],
-          ['Progress of a task', 'ProgressBar (display only)', '—']
+          ['A short line of text', '<textfield>', 'bind:value (str)'],
+          ['Several lines of text', '<textarea>', 'bind:value (str)'],
+          ['Yes or no, in a form', '<checkbox>', 'bind:checked (bool)'],
+          ['On or off, a setting that applies at once', '<switch>', 'bind:checked (bool)'],
+          ['A number in a range', '<slider> (min, max, step)', 'bind:value (number)'],
+          ['One option from a long list', '<select>', 'bind:value'],
+          ['One option from a few, all visible', '<radiogroup>', 'bind:value'],
+          ['Which section is shown', '<tabs>', 'bind:value'],
+          ['Progress of a task', '<progressbar> (display only)', '—']
         ] }
       },
       {
         id: 'options',
         title: 'Options: plain text or label and value',
-        body: 'Select, RadioGroup and Tabs take a list of options. Plain strings are shown and stored as they are. Dictionaries with label and value let the user see a readable label while your Python receives a different value, such as an identifier.\n\nThe user’s choice appears immediately. If Python changes the bound state, the control follows Python. Tabs only draws the bar of tabs: choose the content to show with {#if}.',
+        body: '<select>, <radiogroup> and <tabs> take a list of options. Plain strings are shown and stored as they are. Dictionaries with label and value let the user see a readable label while your Python receives a different value, such as an identifier.\n\nThe user’s choice appears immediately. If Python changes the bound state, the control follows Python. <tabs> only draws the bar of tabs: choose the content to show with {#if}.',
         language: 'janel', standalone: true,
         code: `<script lang="python">
 from janelkit import state
@@ -523,27 +523,27 @@ tab = state("general")
 plan = state(2)
 </script>
 
-<Window title="Options" width={460} height={300}>
-  <Column padding={24} gap={12}>
-    <Tabs options={[{"label": "General", "value": "general"}, {"label": "Billing", "value": "billing"}]} bind:value={tab} />
+<window title="Options" width={460} height={300}>
+  <column padding={24} gap={12}>
+    <tabs options={[{"label": "General", "value": "general"}, {"label": "Billing", "value": "billing"}]} bind:value={tab} />
     {#if tab == "general"}
-      <Text>General settings</Text>
+      <text>General settings</text>
     {:else}
-      <RadioGroup options={[{"label": "Basic", "value": 1}, {"label": "Pro", "value": 2}]} bind:value={plan} />
-      <Text>Plan number {plan}</Text>
+      <radiogroup options={[{"label": "Basic", "value": 1}, {"label": "Pro", "value": 2}]} bind:value={plan} />
+      <text>Plan number {plan}</text>
     {/if}
-  </Column>
-</Window>`,
+  </column>
+</window>`,
         expected: 'General settings is shown first. Choosing Billing shows the plan choice with Pro selected and Plan number 2; choosing Basic shows Plan number 1.',
         see: ['conditions-and-lists']
       },
       {
         id: 'keyboard-in-fields',
         title: 'React to keys in a field',
-        body: 'TextField, TextArea and Select also send keyboard and focus events: on:keydown, on:keyup, on:focus and on:blur. The keydown handler receives a KeyEvent whose key is a name such as Enter, Escape or ArrowDown. event.prevent() stops the key from reaching the field, so it is not typed.\n\nTextArea sends on:input only for changes made by the user, not for changes that come from Python.',
+        body: '<textfield>, <textarea> and <select> also send keyboard and focus events: on:keydown, on:keyup, on:focus and on:blur. The keydown handler receives a KeyEvent whose key is a name such as Enter, Escape or ArrowDown. event.prevent() stops the key from reaching the field, so it is not typed.\n\nTextArea sends on:input only for changes made by the user, not for changes that come from Python.',
         language: 'janel',
         code: `<!-- cancel and save are script functions; draft is a text state. -->
-<TextField bind:value={draft}
+<textfield bind:value={draft}
   on:keydown={event.key == "Escape" and cancel()}
   on:blur={save()} label="Title" />`,
         explanation: [
@@ -555,7 +555,7 @@ plan = state(2)
       {
         id: 'labels',
         title: 'Give every input a name',
-        body: 'A placeholder disappears as soon as the user types, and screen readers may not announce it. Give each input a label, the name a screen reader announces, and when possible a visible Text above it. Then check the form with the keyboard alone: Tab moves through the controls in template order, Enter submits a field.',
+        body: 'A placeholder disappears as soon as the user types, and screen readers may not announce it. Give each input a label, the name a screen reader announces, and when possible a visible <text> above it. Then check the form with the keyboard alone: Tab moves through the controls in template order, Enter submits a field.',
         pitfalls: [
           'Do not rely on the placeholder as the only description of a field.',
           'Test both directions of each binding: type in the control, and change the state from a button.'
@@ -589,18 +589,18 @@ from janelkit import state
 count = state(0)
 </script>
 
-<Window title="Conditions" width={380} height={220}>
-  <Column padding={24} gap={12}>
-    <Button on:click={count += 1}>Click</Button>
+<window title="Conditions" width={380} height={220}>
+  <column padding={24} gap={12}>
+    <button on:click={count += 1}>Click</button>
     {#if count >= 5}
-      <Text>Five or more clicks</Text>
+      <text>Five or more clicks</text>
     {:else if count > 0}
-      <Text>Some clicks</Text>
+      <text>Some clicks</text>
     {:else}
-      <Text>No clicks yet</Text>
+      <text>No clicks yet</text>
     {/if}
-  </Column>
-</Window>`,
+  </column>
+</window>`,
         explanation: [
           'count >= 5 is tested first, so five clicks do not also match the second branch.',
           '{:else} needs no condition; here it covers zero.'
@@ -625,19 +625,19 @@ items = state([
 ])
 </script>
 
-<Window title="A small list" width={420} height={320}>
-  <Column padding={24} gap={12}>
-    <Button on:click={items.reverse()}>Reverse order</Button>
+<window title="A small list" width={420} height={320}>
+  <column padding={24} gap={12}>
+    <button on:click={items.reverse()}>Reverse order</button>
     {#each items as item, i (item["id"])}
-      <Row gap={8}>
-        <Text>{i + 1}. {item["name"]}</Text>
-        <Button on:click={items.remove(item)}>Remove</Button>
-      </Row>
+      <row gap={8}>
+        <text>{i + 1}. {item["name"]}</text>
+        <button on:click={items.remove(item)}>Remove</button>
+      </row>
     {:else}
-      <Text>The list is empty.</Text>
+      <text>The list is empty.</text>
     {/each}
-  </Column>
-</Window>`,
+  </column>
+</window>`,
         expected: 'Bread and Milk appear as numbered rows. Reverse order swaps them and renumbers them. Removing both shows The list is empty.'
       },
       {
@@ -674,7 +674,7 @@ items = state([
       {
         id: 'several-elements',
         title: 'Several elements in one branch or row',
-        body: 'When a branch or a row contains several elements, they are grouped in an implicit container with the parent’s direction, gap and alignment. Usually this is invisible; if you need to control their layout, wrap them in your own Column or Row. Blocks go inside the root element, never around it.',
+        body: 'When a branch or a row contains several elements, they are grouped in an implicit container with the parent’s direction, gap and alignment. Usually this is invisible; if you need to control their layout, wrap them in your own <column> or <row>. Blocks go inside the root element, never around it.',
         steps: [
           'Show the number of items above the list with {len(items)}.',
           'Empty the list and check that the {:else} text appears.',
@@ -714,13 +714,13 @@ def total():
     return quantity.value * price.value
 </script>
 
-<Window title="Computed" width={420} height={220}>
-  <Column padding={24} gap={12}>
-    <Text>{quantity} × {price} credits = {total} credits</Text>
-    <Button on:click={quantity += 1}>Add one</Button>
-    <Button on:click={price = 10}>Discount</Button>
-  </Column>
-</Window>`,
+<window title="Computed" width={420} height={220}>
+  <column padding={24} gap={12}>
+    <text>{quantity} × {price} credits = {total} credits</text>
+    <button on:click={quantity += 1}>Add one</button>
+    <button on:click={price = 10}>Discount</button>
+  </column>
+</window>`,
         explanation: [
           'quantity and price are the source of truth; total is read-only derived data.',
           'Inside the function, read inputs with .value, as in any Python code.',
@@ -777,7 +777,7 @@ assert displayed.value == 100`,
       {
         id: 'practice',
         title: 'Practice: a filtered list',
-        body: 'Combine a list in state, a search text bound to a TextField, and a computed that returns only the items containing the search text. Show the computed list with {#each} and its length in a Text. The filtered list is never stored: it is always calculated from the two inputs.',
+        body: 'Combine a list in state, a search text bound to a <textfield>, and a computed that returns only the items containing the search text. Show the computed list with {#each} and its length in a <text>. The filtered list is never stored: it is always calculated from the two inputs.',
         pitfalls: [
           'Do not keep a second filtered list in state and update it by hand; that is exactly what computed replaces.'
         ]
@@ -792,37 +792,37 @@ assert displayed.value == 100`,
   {
     slug: 'layout',
     title: 'Layout',
-    description: 'Arrange elements with Column, Row and flex, share free space, push items apart, wrap grids and scroll.',
+    description: 'Arrange elements with <column>, <row> and flex, share free space, push items apart, wrap grids and scroll.',
     learn: [
-      'How Column, Row and flex place their children along a main axis.',
+      'How <column>, <row> and flex place their children along a main axis.',
       'The default behavior of each, so layouts are predictable.',
-      'How flex shares free space and how Spacer and margins push items apart.',
+      'How flex shares free space and how <spacer> and margins push items apart.',
       'How to wrap a grid and when to scroll.'
     ],
     sections: [
       {
         id: 'boxes',
         title: 'Three boxes that arrange their children',
-        body: 'A layout answers two questions: where each element goes, and how much space it takes. Column stacks its children from top to bottom. Row places them from left to right. flex, lowercase, is the general box behind both: a row by default, configurable with direction and the full set of flexbox properties.\n\nThe direction a box places its children is its main axis: vertical in a Column, horizontal in a Row. The other direction is the cross axis. gap separates children along the main axis; padding separates them from the box edge.',
+        body: 'A layout answers two questions: where each element goes, and how much space it takes. <column> stacks its children from top to bottom. <row> places them from left to right. flex, lowercase, is the general box behind both: a row by default, configurable with direction and the full set of flexbox properties.\n\nThe direction a box places its children is its main axis: vertical in a <column>, horizontal in a <row>. The other direction is the cross axis. gap separates children along the main axis; padding separates them from the box edge.',
         language: 'janel', standalone: true,
-        code: `<Window title="Boxes" width={460} height={300}>
-  <Column padding={24} gap={12}>
-    <Text>A Column stacks its children.</Text>
-    <TextField placeholder="Fields fill the width" label="Example field" />
-    <Button>Buttons keep their size</Button>
-    <Row gap={8}>
-      <Text>A Row centers its children vertically:</Text>
-      <Button>One</Button>
-      <Button>Two</Button>
-    </Row>
-  </Column>
-</Window>`,
+        code: `<window title="Boxes" width={460} height={300}>
+  <column padding={24} gap={12}>
+    <text>A Column stacks its children.</text>
+    <textfield placeholder="Fields fill the width" label="Example field" />
+    <button>Buttons keep their size</button>
+    <row gap={8}>
+      <text>A Row centers its children vertically:</text>
+      <button>One</button>
+      <button>Two</button>
+    </row>
+  </column>
+</window>`,
         expected: 'The text and the field stretch across the window; the button keeps its natural width. In the last line, the text and two buttons sit side by side, vertically centered.'
       },
       {
         id: 'defaults',
         title: 'Know the defaults',
-        body: 'Most layout surprises come from defaults. In a Column, Text, TextField, TextArea, Column, Row and Scroll take the full width, like blocks, while buttons and checkboxes keep their natural size. In a Row, children are centered vertically. In both, only children with flex shrink when space is short. flex follows web defaults instead: a row, children stretched across, and every child allowed to shrink down to its content.\n\nLeftover space is not spread between children: it stays at the end unless justify-content says otherwise. The root element fills the whole window.',
+        body: 'Most layout surprises come from defaults. In a <column>, <text>, <textfield>, <textarea>, <column>, <row> and <scroll> take the full width, like blocks, while buttons and checkboxes keep their natural size. In a <row>, children are centered vertically. In both, only children with flex shrink when space is short. flex follows web defaults instead: a row, children stretched across, and every child allowed to shrink down to its content.\n\nLeftover space is not spread between children: it stays at the end unless justify-content says otherwise. The root element fills the whole window.',
         table: { headers: ['Property', 'Question it answers', 'Example'], rows: [
           ['gap', 'How far apart are siblings?', 'gap: 12px'],
           ['padding', 'How far from the box edge?', 'padding: 24px'],
@@ -836,18 +836,18 @@ assert displayed.value == 100`,
       {
         id: 'share-space',
         title: 'Share free space with flex',
-        body: 'flex={1} on a child, or flex: 1 in a rule, gives it the free space along the main axis: height in a Column, width in a Row. Several flexible children share it in proportion, regardless of their content: flex 2 and flex 1 get two thirds and one third.\n\nThe container needs a size that comes from outside, such as filling the window or being stretched. A box that only wraps its content has no free space to share. A fixed width for a sidebar and flex: 1 for the main area is the most common desktop layout.',
+        body: 'flex={1} on a child, or flex: 1 in a rule, gives it the free space along the main axis: height in a <column>, width in a <row>. Several flexible children share it in proportion, regardless of their content: flex 2 and flex 1 get two thirds and one third.\n\nThe container needs a size that comes from outside, such as filling the window or being stretched. A box that only wraps its content has no free space to share. A fixed width for a sidebar and flex: 1 for the main area is the most common desktop layout.',
         language: 'janel', standalone: true,
-        code: `<Window title="Workspace" width={700} height={420}>
-  <Row class="workspace">
-    <Column class="sidebar">
-      <Text>Navigation</Text>
-    </Column>
-    <Column class="main">
-      <Text>Your content goes here.</Text>
-    </Column>
-  </Row>
-</Window>
+        code: `<window title="Workspace" width={700} height={420}>
+  <row class="workspace">
+    <column class="sidebar">
+      <text>Navigation</text>
+    </column>
+    <column class="main">
+      <text>Your content goes here.</text>
+    </column>
+  </row>
+</window>
 
 <style>
 .workspace { gap: 16px; padding: 20px; }
@@ -855,27 +855,27 @@ assert displayed.value == 100`,
 .main { flex: 1; align-self: stretch; padding: 16px; }
 </style>`,
         explanation: [
-          'The Row is the root, so it fills the window and has free width to share.',
-          'The sidebar asks for 180 pixels; align-self: stretch makes it as tall as the Row.',
+          'The <row> is the root, so it fills the window and has free width to share.',
+          'The sidebar asks for 180 pixels; align-self: stretch makes it as tall as the <row>.',
           'flex: 1 gives the main area all the remaining width.'
         ],
         expected: 'Resizing the window keeps the sidebar at 180 pixels while the main area grows and shrinks.'
       },
       {
         id: 'push-apart',
-        title: 'Push items apart with Spacer or margin',
-        body: 'Spacer takes the free space in its container and pushes its siblings to the ends. It is the simplest way to build a toolbar with actions on both sides. margin-left: auto on one child does the same from a style rule.',
+        title: 'Push items apart with <spacer> or margin',
+        body: '<spacer> takes the free space in its container and pushes its siblings to the ends. It is the simplest way to build a toolbar with actions on both sides. margin-left: auto on one child does the same from a style rule.',
         language: 'janel', standalone: true,
-        code: `<Window title="Toolbar" width={520} height={160}>
-  <Column padding={16} gap={12}>
-    <Row gap={8}>
-      <Button>New</Button>
-      <Button>Open</Button>
-      <Spacer />
-      <Button variant="primary">Save</Button>
-    </Row>
-  </Column>
-</Window>`,
+        code: `<window title="Toolbar" width={520} height={160}>
+  <column padding={16} gap={12}>
+    <row gap={8}>
+      <button>New</button>
+      <button>Open</button>
+      <spacer />
+      <button variant="primary">Save</button>
+    </row>
+  </column>
+</window>`,
         expected: 'New and Open sit on the left; Save sits at the right edge, whatever the window width.'
       },
       {
@@ -887,13 +887,13 @@ assert displayed.value == 100`,
 cards = [f"Card {n}" for n in range(1, 9)]
 </script>
 
-<Window title="Grid" width={640} height={360}>
+<window title="Grid" width={640} height={360}>
   <flex class="grid">
     {#each cards as card}
-      <Column class="card"><Text>{card}</Text></Column>
+      <column class="card"><text>{card}</text></column>
     {/each}
   </flex>
-</Window>
+</window>
 
 <style>
 .grid { flex-wrap: wrap; gap: 12px; padding: 16px; align-items: start; }
@@ -903,20 +903,20 @@ cards = [f"Card {n}" for n in range(1, 9)]
       },
       {
         id: 'scroll-and-size',
-        title: 'Scroll, and sizes',
-        body: 'Scroll is a Column that scrolls vertically when its content is taller than the space it has; by default it takes the free space of its container. It creates all its content, which is right for settings pages and modest lists. For hundreds or thousands of rows use List, which only creates the visible rows.\n\nwidth and height set a preferred size in pixels; 100% takes the available space and other percentages are relative to the container. min-width, max-width, min-height and max-height limit how far an element grows or shrinks. A preferred size is a request, not a guarantee that content fits every window.',
+        title: '<scroll>, and sizes',
+        body: '<scroll> is a <column> that scrolls vertically when its content is taller than the space it has; by default it takes the free space of its container. It creates all its content, which is right for settings pages and modest lists. For hundreds or thousands of rows use <list>, which only creates the visible rows.\n\nwidth and height set a preferred size in pixels; 100% takes the available space and other percentages are relative to the container. min-width, max-width, min-height and max-height limit how far an element grows or shrinks. A preferred size is a request, not a guarantee that content fits every window.',
         pitfalls: [
           'flex: 1 has no effect when the container only wraps its content: there is no free space to share. Give the container a size, flex or align-self: stretch.',
-          'Do not nest a Scroll inside a box that grows with its content; the Scroll then never needs to scroll.',
+          'Do not nest a <scroll> inside a box that grows with its content; the <scroll> then never needs to scroll.',
           'Spacing between children belongs in gap on the container, not in margins on every child.'
         ],
         see: ['large-lists', 'styles']
       }
     ],
     summary: [
-      'Column stacks, Row lines up, flex is the general box; gap and padding set spacing.',
-      'flex shares free space; Spacer and margin auto push items apart.',
-      'flex-wrap builds grids; Scroll scrolls, List handles very long lists.'
+      '<column> stacks, <row> lines up, flex is the general box; gap and padding set spacing.',
+      'flex shares free space; <spacer> and margin auto push items apart.',
+      'flex-wrap builds grids; <scroll> scrolls, <list> handles very long lists.'
     ]
   },
   {
@@ -935,13 +935,13 @@ cards = [f"Card {n}" for n in range(1, 9)]
         title: 'A rule selects elements and sets properties',
         body: 'The style section holds rules. A rule has a selector, which says which elements it applies to, followed by braces with property: value; declarations. .page matches elements whose class includes page. Values are numbers in pixels (16px or 16), colors (#rrggbb, #aarrggbb, names, rgb() and rgba()) or theme tokens such as var(--primary).\n\nJanelKit is not a browser. It supports a list of properties and translates them to Qt Quick. An unsupported property or value produces a warning with its location and is ignored. The check happens when a rule is applied to an element, so a rule that matches nothing is never checked.',
         language: 'janel', standalone: true,
-        code: `<Window title="A little style" width={440} height={260}>
-  <Column class="page">
-    <Text class="heading">A readable interface</Text>
-    <Text class="muted">Padding gives content room to breathe.</Text>
-    <Button variant="primary">Continue</Button>
-  </Column>
-</Window>
+        code: `<window title="A little style" width={440} height={260}>
+  <column class="page">
+    <text class="heading">A readable interface</text>
+    <text class="muted">Padding gives content room to breathe.</text>
+    <button variant="primary">Continue</button>
+  </column>
+</window>
 
 <style>
 .page { padding: 24px; gap: 16px; }
@@ -949,9 +949,9 @@ cards = [f"Card {n}" for n in range(1, 9)]
 .muted { color: var(--text-muted); }
 </style>`,
         explanation: [
-          'class="page" connects the Column to the .page rule. The dot belongs only in the rule.',
+          'class="page" connects the <column> to the .page rule. The dot belongs only in the rule.',
           'var(--font-size-xl) and var(--text-muted) are theme tokens: named values from the active theme.',
-          'variant="primary" is a Button property, not a style rule; Button also has default, danger and ghost.'
+          'variant="primary" is a <button> property, not a style rule; <button> also has default, danger and ghost.'
         ],
         expected: 'A large title, a softer line of text and an accent button, stacked with even spacing.'
       },
@@ -965,14 +965,14 @@ from janelkit import state
 chosen = state(False)
 </script>
 
-<Window title="Classes" width={400} height={240}>
-  <Column padding={24} gap={12}>
-    <Column class="card" class:chosen={chosen}>
-      <Text>This card follows the checkbox</Text>
-    </Column>
-    <Checkbox bind:checked={chosen}>Choose the card</Checkbox>
-  </Column>
-</Window>
+<window title="Classes" width={400} height={240}>
+  <column padding={24} gap={12}>
+    <column class="card" class:chosen={chosen}>
+      <text>This card follows the checkbox</text>
+    </column>
+    <checkbox bind:checked={chosen}>Choose the card</checkbox>
+  </column>
+</window>
 
 <style>
 .card { padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); }
@@ -986,7 +986,7 @@ chosen = state(False)
         body: 'Rules are local: they apply to elements written in this component’s template, including content it passes into a child’s slot, never to the inside of another component. When several rules match, the more specific one wins, counting classes and pseudo-classes first, then elements; with equal specificity, the later rule wins. Attributes written on the element, such as gap={4}, beat plain rules; rules with a state, a class: or a class={…} beat attributes.',
         table: { headers: ['Selector', 'Matches'], rows: [
           ['.title', 'Elements with class title.'],
-          ['Button', 'Every Button in this component (also flex).'],
+          ['<button>', 'Every <button> in this component (also flex).'],
           ['.a, .b', 'Elements with class a, and elements with class b.'],
           ['.button.primary', 'Elements with both classes.'],
           ['.card .title', 'A .title anywhere inside a .card.'],
@@ -1024,14 +1024,14 @@ from janelkit import state
 opened = state(0)
 </script>
 
-<Window title="States" width={400} height={240}>
-  <Column padding={24} gap={12}>
-    <Row class="tile" on:click={opened += 1} label="Open the tile">
-      <Text>Hover or click this tile</Text>
-    </Row>
-    <Text>Opened {opened} times</Text>
-  </Column>
-</Window>
+<window title="States" width={400} height={240}>
+  <column padding={24} gap={12}>
+    <row class="tile" on:click={opened += 1} label="Open the tile">
+      <text>Hover or click this tile</text>
+    </row>
+    <text>Opened {opened} times</text>
+  </column>
+</window>
 
 <style>
 .tile { padding: 16px; border-radius: var(--radius); background: var(--surface); transition: background 150ms; }
@@ -1071,12 +1071,12 @@ opened = state(0)
 from janelkit import theme
 </script>
 
-<Window title="Themes" width={420} height={240}>
-  <Column class="page">
-    <Text>Current theme: {theme.name}</Text>
-    <Button on:click={theme.toggle()}>Switch light / dark</Button>
-  </Column>
-</Window>
+<window title="Themes" width={420} height={240}>
+  <column class="page">
+    <text>Current theme: {theme.name}</text>
+    <button on:click={theme.toggle()}>Switch light / dark</button>
+  </column>
+</window>
 
 <style>
 .page { padding: 24px; gap: 16px; background: var(--bg); }
@@ -1091,7 +1091,7 @@ from janelkit import theme
       {
         id: 'limits',
         title: 'Stay inside the supported subset',
-        body: 'Supported: colors and backgrounds, borders per side and radii per corner, padding and margin, gap, the flexbox properties, fonts and text properties, opacity, transform, box-shadow, outline, cursor, overflow, position (relative, absolute, fixed) with z-index, and transitions of color, background, border color, opacity, size, radius and transform. An unsupported property or value produces a warning and is ignored; an unsupported selector or an at-rule such as @media or @keyframes is a compile error. The Style reference lists every property, value and element.\n\nText properties such as color and font-size set on a box are inherited by the Text elements inside it, even inside child components. A box can also define its own variables, --accent: var(--primary), read with var(--accent) by what it contains.',
+        body: 'Supported: colors and backgrounds, borders per side and radii per corner, padding and margin, gap, the flexbox properties, fonts and text properties, opacity, transform, box-shadow, outline, cursor, overflow, position (relative, absolute, fixed) with z-index, and transitions of color, background, border color, opacity, size, radius and transform. An unsupported property or value produces a warning and is ignored; an unsupported selector or an at-rule such as @media or @keyframes is a compile error. The Style reference lists every property, value and element.\n\nText properties such as color and font-size set on a box are inherited by the <text> elements inside it, even inside child components. A box can also define its own variables, --accent: var(--primary), read with var(--accent) by what it contains.',
         pitfalls: [
           'Eight-digit hex colors are #aarrggbb (alpha first), not the browser’s #rrggbbaa.',
           'A misspelled color name such as blu compiles, but the application then refuses to start. Prefer theme tokens over color names.',

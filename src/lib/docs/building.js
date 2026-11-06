@@ -1,8 +1,10 @@
 // Guide · Part 3 · Building applications.
 // Sources (read-only): JanelKit/docs/lenguaje.md (Componentes, Props y eventos, Slots,
-// Estilos en la etiqueta, Ciclo de vida, Contexto, persisted, History, Navegación, Varias
-// ventanas, Trabajo asíncrono, Temporizadores) and docs/api.md, cross-checked against
-// packages/janelkit/src/janelkit and by running every complete example headless.
+// Estilos en la etiqueta, Ciclo de vida, Contexto, Preguntar antes de salir, Varias
+// ventanas, Trabajo asíncrono, Temporizadores), docs/patrones.md (Vistas ocultas) and
+// docs/api.md (0.2), cross-checked against packages/janelkit/src/janelkit and by running
+// every complete example headless. Page stacks and persisted moved to ./router.js and
+// ./store.js with their packages.
 export const buildingDocs = [
   {
     slug: 'components',
@@ -22,7 +24,7 @@ export const buildingDocs = [
         table: { headers: ['Direction', 'Mechanism', 'Example'], rows: [
           ['Parent → child: data', 'Prop', '<Greeting name="Ada" />'],
           ['Child → parent: something happened', 'Event', '<NameEditor on:saved={accept} />'],
-          ['Parent → child: content', 'Slot', '<Card><Text>Inside the card</Text></Card>']
+          ['Parent → child: content', '<slot>', '<Card><text>Inside the card</text></Card>']
         ] }
       },
       {
@@ -35,24 +37,24 @@ from janelkit import state
 count = state(0)
 </script>
 
-<Row gap={8}>
-  <Text>Count: {count}</Text>
-  <Button on:click={count += 1}>Add</Button>
-</Row>` },
+<row gap={8}>
+  <text>Count: {count}</text>
+  <button on:click={count += 1}>Add</button>
+</row>` },
           { path: 'src/App.janel', code: `<script lang="python">
 from components.Counter import Counter
 </script>
 
-<Window title="Two counters" width={360} height={200}>
-  <Column padding={24} gap={12}>
+<window title="Two counters" width={360} height={200}>
+  <column padding={24} gap={12}>
     <Counter />
     <Counter />
-  </Column>
-</Window>` }
+  </column>
+</window>` }
         ],
         explanation: [
           'from components.Counter import Counter loads src/components/Counter.janel. from components import Counter does the same; from .Counter import Counter is relative to the importing file.',
-          'Counter’s root is a Row, not a Window: components used inside others become part of a window.',
+          'Counter’s root is a <row>, not a <window>: components used inside others become part of a window.',
           'Each <Counter /> runs Counter’s script again, so each gets its own count.'
         ],
         expected: 'Two lines show Count: 0. Clicking the first Add changes only the first line to Count: 1.'
@@ -69,7 +71,7 @@ name: str = prop()            # required
 excited: bool = prop(False)   # optional, False by default
 </script>
 
-<Text>Hello, {name}{"!" if excited else "."}</Text>` },
+<text>Hello, {name}{"!" if excited else "."}</text>` },
           { path: 'src/App.janel', code: `<script lang="python">
 from janelkit import state
 from components.Greeting import Greeting
@@ -77,13 +79,13 @@ from components.Greeting import Greeting
 who = state("Ada")
 </script>
 
-<Window title="Props" width={380} height={220}>
-  <Column padding={24} gap={12}>
-    <TextField bind:value={who} label="Name" />
+<window title="Props" width={380} height={220}>
+  <column padding={24} gap={12}>
+    <textfield bind:value={who} label="Name" />
     <Greeting name={who} />
     <Greeting name="Grace" excited />
-  </Column>
-</Window>` }
+  </column>
+</window>` }
         ],
         explanation: [
           'name={who} is an expression, so the first greeting follows the text field.',
@@ -112,10 +114,10 @@ def save():
     saved.emit(draft.value.strip())
 </script>
 
-<Row gap={8}>
-  <TextField bind:value={draft} label="New name" />
-  <Button on:click={save}>Save</Button>
-</Row>` },
+<row gap={8}>
+  <textfield bind:value={draft} label="New name" />
+  <button on:click={save}>Save</button>
+</row>` },
           { path: 'src/App.janel', code: `<script lang="python">
 from janelkit import state
 from components.NameEditor import NameEditor
@@ -126,12 +128,12 @@ def accept(value):
     name.value = value
 </script>
 
-<Window title="Events" width={420} height={200}>
-  <Column padding={24} gap={12}>
-    <Text>Saved: {name}</Text>
+<window title="Events" width={420} height={200}>
+  <column padding={24} gap={12}>
+    <text>Saved: {name}</text>
     <NameEditor name={name} on:saved={accept} />
-  </Column>
-</Window>` }
+  </column>
+</window>` }
         ],
         explanation: [
           'draft starts as a copy of the prop. Typing changes the draft, not the parent.',
@@ -146,18 +148,18 @@ def accept(value):
       {
         id: 'slots',
         title: 'Slots: content the parent places inside',
-        body: 'A prop passes a value; a slot passes a piece of template. In the child, <Slot /> marks where the parent’s content goes, and <Slot name="footer"> is a named slot. Content written inside a <Slot> tag is the fallback, shown when the parent supplies nothing.\n\nIn the parent, elements without a slot attribute go to the default slot; an element with slot="footer" goes to that slot. Slot content belongs to the parent: it sees the parent’s state and functions, even though the child decides where it appears.',
+        body: 'A prop passes a value; a slot passes a piece of template. In the child, <slot /> marks where the parent’s content goes, and <slot name="footer"> is a named slot. Content written inside a <slot> tag is the fallback, shown when the parent supplies nothing.\n\nIn the parent, elements without a slot attribute go to the default slot; an element with slot="footer" goes to that slot. <slot> content belongs to the parent: it sees the parent’s state and functions, even though the child decides where it appears.',
         files: [
           { path: 'src/components/Card.janel', code: `<script lang="python">
 from janelkit import prop
 title = prop()
 </script>
 
-<Column class="card">
-  <Text class="title">{title}</Text>
-  <Slot />
-  <Row gap={8}><Slot name="footer"><Text>No actions</Text></Slot></Row>
-</Column>
+<column class="card">
+  <text class="title">{title}</text>
+  <slot />
+  <row gap={8}><slot name="footer"><text>No actions</text></slot></row>
+</column>
 
 <style>
 .card { padding: 16px; gap: 8px; border: 1px solid var(--border); border-radius: var(--radius); }
@@ -170,41 +172,41 @@ from components.Card import Card
 message = state("Ready")
 </script>
 
-<Window title="Slots" width={420} height={320}>
-  <Column padding={24} gap={12}>
+<window title="Slots" width={420} height={320}>
+  <column padding={24} gap={12}>
     <Card title="Task">
-      <Text>{message}</Text>
-      <Button slot="footer" on:click={message = "Done"}>Finish</Button>
+      <text>{message}</text>
+      <button slot="footer" on:click={message = "Done"}>Finish</button>
     </Card>
     <Card title="Empty card" />
-  </Column>
-</Window>` }
+  </column>
+</window>` }
         ],
         explanation: [
-          '<Text>{message}</Text> has no slot attribute, so it goes to the default <Slot />.',
-          'The Button with slot="footer" replaces the fallback text of the footer slot.',
+          '<text>{message}</text> has no slot attribute, so it goes to the default <slot />.',
+          'The <button> with slot="footer" replaces the fallback text of the footer slot.',
           'The second card supplies nothing, so its footer shows the fallback No actions.',
           'message belongs to App; the card only decides where the content appears.'
         ],
         expected: 'The first card shows Ready and a Finish button; the second shows No actions. Finish changes Ready to Done.',
         pitfalls: [
           'Passing content to a slot name the child does not declare is a compile error: <Card> no admite el slot \'header\' ("does not accept the slot"), followed by a hint that lists the slots the child declares.',
-          'Filling one named slot twice is also a compile error. Wrap several elements for one slot in a Row or Column with that slot attribute.'
+          'Filling one named slot twice is also a compile error. Wrap several elements for one slot in a <row> or <column> with that slot attribute.'
         ]
       },
       {
         id: 'tag-attributes',
         title: 'Style and wire a component like an element',
-        body: 'When a component’s root is a box (flex, Column or Row), attributes on its tag that it does not declare as props pass to that root: class, style, id, label, flex, width, height, visible, ref and native events such as on:click. That lets you use a component like a built-in element, and the parent’s style rules, including :hover, apply to the root.\n\nIf the component declares a prop or event with the same name, the declaration wins. Setting inherit_attrs = False in the child’s script turns this off. When the root is not a box, layout attributes go to an outer box that wraps the component, and an undeclared event is a compile error.',
+        body: 'When a component’s root is a box (flex, <column> or <row>), attributes on its tag that it does not declare as props pass to that root: class, style, id, label, flex, width, height, visible, ref and native events such as on:click. That lets you use a component like a built-in element, and the parent’s style rules, including :hover, apply to the root.\n\nIf the component declares a prop or event with the same name, the declaration wins. Setting inherit_attrs = False in the child’s script turns this off. When the root is not a box, layout attributes go to an outer box that wraps the component, and an undeclared event is a compile error.',
         files: [
           { path: 'src/components/Tile.janel', code: `<script lang="python">
 from janelkit import prop
 title = prop()
 </script>
 
-<Column class="tile">
-  <Text>{title}</Text>
-</Column>
+<column class="tile">
+  <text>{title}</text>
+</column>
 
 <style>
 .tile { padding: 16px; border-radius: var(--radius); background: var(--surface); }
@@ -216,12 +218,12 @@ from components.Tile import Tile
 opened = state(0)
 </script>
 
-<Window title="Tiles" width={380} height={240}>
-  <Column padding={24} gap={12}>
+<window title="Tiles" width={380} height={240}>
+  <column padding={24} gap={12}>
     <Tile title="Reports" class="featured" on:click={opened += 1} label="Open reports" />
-    <Text>Opened {opened} times</Text>
-  </Column>
-</Window>
+    <text>Opened {opened} times</text>
+  </column>
+</window>
 
 <style>
 .featured { border: 1px solid var(--primary); }
@@ -229,7 +231,7 @@ opened = state(0)
 </style>` }
         ],
         explanation: [
-          'Tile declares only title. class, on:click and label pass to its root Column.',
+          'Tile declares only title. class, on:click and label pass to its root <column>.',
           'App’s .featured rule styles Tile’s root, including the :hover state.',
           'on:click works without Tile declaring an event, because the root is a box.'
         ],
@@ -279,7 +281,7 @@ opened = state(0)
       {
         id: 'register-during-setup',
         title: 'Register hooks while the script runs',
-        body: 'on_mount(fn), on_destroy(fn) and before_leave(fn) register a function for the current component; each also works as a decorator. Registration must happen while the script runs, at the top level or in a helper called from it. The same rule applies to provide, inject, pages, sections and navigation. A later button click is too late: calling them from a handler raises RuntimeError.',
+        body: 'on_mount(fn), on_destroy(fn) and before_leave(fn) register a function for the current component; each also works as a decorator. Registration must happen while the script runs, at the top level or in a helper called from it. The same rule applies to provide, inject and is_visible, and to the page stacks of janelkit-router. A later button click is too late: calling them from a handler raises RuntimeError.',
         pitfalls: [
           'Do not call on_destroy inside a click handler to attach cleanup after an operation. Register it during setup.'
         ]
@@ -303,12 +305,12 @@ def prepare():
     return lambda: print("mount cleanup")
 </script>
 
-<Column padding={24} gap={12}>
-  <TextField ref={field} bind:value={name} label="Name" />
-  <Text>Hello, {name}</Text>
-</Column>`,
+<column padding={24} gap={12}>
+  <textfield ref={field} bind:value={name} label="Name" />
+  <text>Hello, {name}</text>
+</column>`,
         explanation: [
-          'ref() creates a handle; ref={field} attaches it to the TextField when the field exists.',
+          'ref() creates a handle; ref={field} attaches it to the <textfield> when the field exists.',
           'In on_mount the field exists, so focus() and select_all() act on it.',
           'The returned lambda is stored and called when the component is destroyed.'
         ],
@@ -334,7 +336,7 @@ def mounted():
     return lambda: print("mount cleanup")
 </script>
 
-<Text>Close the window to see the cleanup order.</Text>`,
+<text>Close the window to see the cleanup order.</text>`,
         expected: 'Closing the window prints mount cleanup, then effect cleanup, then destroy callback.',
         pitfalls: [
           'Destroy callbacks are not awaited. Do not rely on an async on_destroy to finish saving data.',
@@ -361,11 +363,11 @@ def stop_watching():
     watcher.dispose()
 </script>
 
-<Column padding={24} gap={12}>
-  <Text>Channel: {channel}</Text>
-  <Button on:click={channel = "sports"}>Choose sports</Button>
-  <Button on:click={stop_watching}>Stop watching</Button>
-</Column>`,
+<column padding={24} gap={12}>
+  <text>Channel: {channel}</text>
+  <button on:click={channel = "sports"}>Choose sports</button>
+  <button on:click={stop_watching}>Stop watching</button>
+</column>`,
         explanation: [
           'The effect reads channel, so it reruns whenever channel changes.',
           'The returned lambda remembers the name of the run that created it, so it stops the right channel.',
@@ -390,10 +392,10 @@ def stop_watching():
           ['A connection or file you opened', 'Nothing: release it in on_destroy or in a cleanup.']
         ] },
         pitfalls: [
-          'Hiding is not destroying. Content inside {#hidden}, a page covered by another page and an inactive section stay alive and keep their effects, timers and tasks running.',
-          'before_leave asks permission to leave a page; it is not a cleanup hook. Release resources in on_destroy.'
+          'Hiding is not destroying. Content inside {#hidden}, a list row scrolled out of view, and a covered page or inactive section of janelkit-router stay alive. What they show waits and catches up when they are seen again, but their effects, timers and tasks keep running. is_visible() tells a component whether it is seen; see Timers.',
+          'before_leave asks permission to close a window or leave a page; it is not a cleanup hook. Release resources in on_destroy.'
         ],
-        see: ['async', 'timers', 'navigation']
+        see: ['async', 'timers', 'windows']
       }
     ],
     summary: [
@@ -418,7 +420,8 @@ def stop_watching():
         body: 'Props reach one child, explicitly. A Python module reaches the whole application: every component that imports it sees the same objects, because Python imports a module only once. Context reaches the descendants of one component, which is useful when the value depends on where a component sits, such as the current project in one of several panels.',
         table: { headers: ['Mechanism', 'Reach', 'Use it for'], rows: [
           ['Prop', 'One child', 'A direct, visible input. The default choice.'],
-          ['Python module with state', 'The whole application', 'A cart, the signed-in user, settings, a data service.'],
+          ['Python module with state', 'The whole application', 'A data service, the shared values of a small app, objects with state of their own.'],
+          ['A store (janelkit-store)', 'The whole application, every window', 'The application’s data: the user, the documents, a cart. Actions, change tracking and a fresh instance in each test.'],
           ['provide / inject', 'Descendants of one component', 'A value that depends on position in the tree, without passing it through every level.']
         ] }
       },
@@ -440,23 +443,23 @@ def clear():
 from services.cart import items
 </script>
 
-<Text>Cart: {len(items)} item(s)</Text>` },
+<text>Cart: {len(items)} item(s)</text>` },
           { path: 'src/App.janel', code: `<script lang="python">
 from services import cart
 from services.cart import items
 from components.CartBadge import CartBadge
 </script>
 
-<Window title="Shop" width={420} height={260}>
-  <Column padding={24} gap={12}>
+<window title="Shop" width={420} height={260}>
+  <column padding={24} gap={12}>
     <CartBadge />
-    <Row gap={8}>
-      <Button on:click={cart.add("Apple")}>Add an apple</Button>
-      <Button on:click={cart.clear()}>Empty the cart</Button>
-    </Row>
-    <Text>{", ".join(items) or "The cart is empty."}</Text>
-  </Column>
-</Window>` }
+    <row gap={8}>
+      <button on:click={cart.add("Apple")}>Add an apple</button>
+      <button on:click={cart.clear()}>Empty the cart</button>
+    </row>
+    <text>{", ".join(items) or "The cart is empty."}</text>
+  </column>
+</window>` }
         ],
         explanation: [
           'cart.py creates items once, the first time it is imported. Both components get the same object.',
@@ -464,8 +467,9 @@ from components.CartBadge import CartBadge
           'Import the state by name (from services.cart import items) to use it in templates without .value: templates unwrap names, not attributes.'
         ],
         expected: 'Cart: 0 item(s) and The cart is empty. at first. Each Add an apple updates both lines: Cart: 1 item(s) and Apple. Empty the cart resets both.',
+        see: ['store'],
         pitfalls: [
-          'Module state lives as long as the Python process. In tests that mount the app several times in one process, it is not reset between mounts; give the module a reset function.',
+          'Module state lives as long as the Python process. In tests that mount the app several times in one process, it is not reset between mounts; give the module a reset function, or use a store, whose use() gives each mount a fresh instance.',
           'An effect or timer created at the top level of a module has no component owner; stop it yourself.'
         ]
       },
@@ -479,7 +483,7 @@ from janelkit import inject
 workspace = inject("workspace")
 </script>
 
-<Text>Workspace: {workspace}</Text>` },
+<text>Workspace: {workspace}</text>` },
           { path: 'src/App.janel', code: `<script lang="python">
 from janelkit import provide, state
 from components.WorkspaceBadge import WorkspaceBadge
@@ -488,12 +492,12 @@ workspace = state("Studio")
 provide("workspace", workspace)
 </script>
 
-<Window title="Context" width={380} height={200}>
-  <Column padding={24} gap={12}>
+<window title="Context" width={380} height={200}>
+  <column padding={24} gap={12}>
     <WorkspaceBadge />
-    <Button on:click={workspace = "Lab"}>Change workspace</Button>
-  </Column>
-</Window>` }
+    <button on:click={workspace = "Lab"}>Change workspace</button>
+  </column>
+</window>` }
         ],
         explanation: [
           'App provides the state object itself, under the key "workspace".',
@@ -505,7 +509,7 @@ provide("workspace", workspace)
       {
         id: 'override',
         title: 'Override context for one subtree',
-        body: 'A component in the middle can provide the same key with another value. Its descendants receive the nearer value, while the rest of the tree keeps the original. That is how two panels can show two different projects with the same components. Pages inherit context from the component that creates their stack, and a secondary window inherits from the component that opens it.',
+        body: 'A component in the middle can provide the same key with another value. Its descendants receive the nearer value, while the rest of the tree keeps the original. That is how two panels can show two different projects with the same components. A secondary window inherits context from the component that opens it, and the pages of a janelkit-router stack inherit it from the component that creates the stack.',
         language: 'python',
         code: `# Script of a middle component, such as a preview panel.
 from janelkit import provide, state
@@ -519,7 +523,7 @@ provide("workspace", preview_workspace)   # its descendants now see "Preview"`,
       }
     ],
     summary: [
-      'Prefer props; use a module for application-wide data; use context for data tied to a subtree.',
+      'Prefer props; use a store or a module for application-wide data; use context for data tied to a subtree.',
       'A module with state is one shared source of truth; change it through its functions.',
       'provide and inject share the object itself; share state to keep it reactive.'
     ]
@@ -540,8 +544,8 @@ provide("workspace", preview_workspace)   # its descendants now see "Preview"`,
         body: 'Almost everything on screen follows state: you change data and the interface updates. A few actions are not data but commands to one element: put the cursor in this field, select its text, scroll this list to the end. For those, give the element a ref.\n\nfield = ref() in the script creates an empty handle; ref={field} on an element attaches it. field.value is reactive: None until the element exists, the element once it does, and None again when it is destroyed.',
         table: { headers: ['Member', 'What it does'], rows: [
           ['focus() / blur()', 'Gives or removes keyboard focus.'],
-          ['select_all()', 'Selects all the text of a TextField or TextArea.'],
-          ['scroll_to_start() / scroll_to_end() / scroll_to(index)', 'Scrolls a <List>. scroll_to_end also resumes following new rows in a follow list.'],
+          ['select_all()', 'Selects all the text of a <textfield> or <textarea>.'],
+          ['scroll_to_start() / scroll_to_end() / scroll_to(…)', 'Scrolls a <list> or a <scroll>. In a <list>, scroll_to takes a row index; in a <scroll>, the ref of an element inside it, which it brings fully into view. scroll_to_end also resumes following new rows with follow.'],
           ['exists', 'True while the element exists. Reactive.'],
           ['focused', 'Whether the element, or something inside it, has focus. Not reactive: read it in a handler.'],
           ['value', 'The underlying Qt Quick item, or None. A Qt interface, not JanelKit’s: last resort only.']
@@ -559,15 +563,15 @@ name = state("Ada Lovelace")
 field = ref()
 </script>
 
-<Column padding={24} gap={12}>
-  <TextField ref={field} bind:value={name} label="Name" />
-  <Row gap={8}>
-    <Button on:click={field.focus()}>Edit name</Button>
-    <Button on:click={field.select_all()}>Select all</Button>
-  </Row>
-</Column>`,
+<column padding={24} gap={12}>
+  <textfield ref={field} bind:value={name} label="Name" />
+  <row gap={8}>
+    <button on:click={field.focus()}>Edit name</button>
+    <button on:click={field.select_all()}>Select all</button>
+  </row>
+</column>`,
         explanation: [
-          'ref={field} attaches the handle when the TextField is created.',
+          'ref={field} attaches the handle when the <textfield> is created.',
           'Each button sends one command to that specific field.',
           'name still holds the text; the ref only controls the element.'
         ],
@@ -594,17 +598,17 @@ def focus_when_shown():
 effect(focus_when_shown)
 </script>
 
-<Column padding={24} gap={12}>
-  <Button on:click={editing = not editing}>{"Done" if editing else "Rename"}</Button>
+<column padding={24} gap={12}>
+  <button on:click={editing = not editing}>{"Done" if editing else "Rename"}</button>
   {#if editing}
-    <TextField ref={field} bind:value={name} label="Name" />
+    <textfield ref={field} bind:value={name} label="Name" />
   {:else}
-    <Text>Name: {name}</Text>
+    <text>Name: {name}</text>
   {/if}
-</Column>`,
+</column>`,
         explanation: [
           'The effect reads field.exists, so it reruns when the field is created or destroyed.',
-          'Each Rename creates a new TextField; the effect focuses it and selects its text.',
+          'Each Rename creates a new <textfield>; the effect focuses it and selects its text.',
           'name belongs to the component, not to the field, so the text survives each Done.'
         ],
         expected: 'Rename shows the field with Ada selected. Type Grace and click Done: Name: Grace. Rename again shows Grace selected.'
@@ -615,7 +619,7 @@ effect(focus_when_shown)
         body: 'A ref points to one element. It is not a way to read values: read state instead, which is reactive and testable.',
         pitfalls: [
           'One ref reused inside {#each} points to the last row created, not to every row.',
-          'select_all() on an element without text raises TypeError; the scroll helpers only work on <List>.',
+          'select_all() on an element without text raises TypeError; the scroll helpers only work on <list> and <scroll>.',
           'A ref on a component whose root is a box targets that root, not an input inside the component.',
           'Prefer the helpers to ref.value: Qt’s item API is not part of JanelKit’s contract and may change.'
         ],
@@ -629,256 +633,26 @@ effect(focus_when_shown)
     ]
   },
   {
-    slug: 'navigation',
-    title: 'Navigation and windows',
-    description: 'Move between screens with page stacks, keep independent sections, return results, ask before leaving and open more windows.',
+    slug: 'windows',
+    title: 'Windows and screens',
+    description: 'Open more windows, keep one of each kind, choose the screen a window uses, go full screen and ask before a window closes.',
     learn: [
-      'Which tool fits: a page stack, sections or a second window.',
-      'How push, pop, replace and reset change the stack.',
-      'How a page returns a result to the page that opened it.',
-      'How to ask before leaving a page with unsaved changes.'
+      'How open_window opens a component in its own window, with props and events.',
+      'How single=True brings an open window to the front instead of opening another.',
+      'How to choose a screen and go full screen with <window screen> and fullscreen.',
+      'How before_leave asks before the user closes a window.'
     ],
     sections: [
       {
-        id: 'choose',
-        title: 'Three kinds of movement',
-        body: 'A page stack models a journey with Back: a list, then a detail, then back to the same list. Sections model separate destinations, such as a sidebar with Projects and People, each keeping its own journey. A second window is a real operating-system window for a separate tool. All three use your .janel components, with props and events; there are no URLs.',
-        table: { headers: ['Tool', 'Shows', 'Keeps'], rows: [
-          ['pages(...) + <Pages>', 'The top page of a stack', 'The pages underneath, alive, for Back.'],
-          ['sections(...) + <Sections>', 'One destination at a time', 'Every destination’s whole stack.'],
-          ['open_window(...)', 'Another window', 'Its own component, until it is closed.']
-        ] }
-      },
-      {
-        id: 'stack',
-        title: 'A stack of pages',
-        body: 'pages(First) creates a stack during setup, starting with the component First; <Pages stack={nav} /> shows its top page and takes the free space. A page gets its stack with navigation() during its own setup, without receiving it as a prop.\n\npush shows a new page on top. The page underneath stays alive, so when the user comes back with pop, it is exactly as it was left.',
-        files: [
-          { path: 'src/App.janel', code: `<script lang="python">
-from janelkit import pages
-from pages.Home import Home
-
-nav = pages(Home)
-</script>
-
-<Window title="Pages" width={420} height={260}>
-  <Pages stack={nav} />
-</Window>` },
-          { path: 'src/pages/Home.janel', code: `<script lang="python">
-from janelkit import navigation, state
-from pages.Detail import Detail
-
-nav = navigation()
-draft = state("")
-</script>
-
-<Column padding={24} gap={12}>
-  <TextField bind:value={draft} placeholder="Type something" label="Draft" />
-  <Button on:click={nav.push(Detail)}>Open detail</Button>
-</Column>` },
-          { path: 'src/pages/Detail.janel', code: `<script lang="python">
-from janelkit import navigation
-nav = navigation()
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Detail page</Text>
-  <Button on:click={nav.pop()}>Back</Button>
-</Column>` }
-        ],
-        explanation: [
-          'App only creates the stack and shows it. Home is the first page.',
-          'Home and Detail call navigation() to reach the same stack.',
-          'Home stays alive under Detail, so its draft survives the trip.'
-        ],
-        expected: 'Type a draft, click Open detail, then Back: Home reappears with the same draft.'
-      },
-      {
-        id: 'commands',
-        title: 'push, pop, replace and reset',
-        body: 'Each operation decides which pages are kept. A discarded page is destroyed and its cleanups run; a covered page is kept, and its effects and tasks keep running. Keyword arguments are the new page’s props, and on_name arguments connect its events: nav.push(Detail, item=item, on_deleted=remove).',
-        table: { headers: ['Call', 'Effect on the stack'], rows: [
-          ['push(Page, **props)', 'Adds Page on top; keeps the current page underneath.'],
-          ['pop()', 'Discards the top page. Does nothing on the first page.'],
-          ['back(value)', 'Like pop, and delivers value to whoever awaited the push.'],
-          ['replace(Page, **props)', 'Discards the current page and shows Page in its place.'],
-          ['reset(Page, **props)', 'Discards every page and starts again from Page.']
-        ] },
-        language: 'janel',
-        code: `<!-- In the component that owns nav = pages(Home): a header with Back. -->
-<Row gap={8}>
-  <Button on:click={nav.pop()} enabled={nav.can_go_back}>← Back</Button>
-  <Text>{nav.current}</Text>
-</Row>
-<Pages stack={nav} transition:slide />`,
-        explanation: [
-          'nav.can_go_back, nav.current (the name of the visible page) and nav.depth are reactive.',
-          'transition:slide animates pages forward and back; fade and scale also exist.',
-          'Alt+Left and the mouse’s Back button go back in the innermost visible stack.'
-        ],
-        pitfalls: [
-          'push always creates a new instance; it never reuses an existing page of the same type.',
-          'Do not reset just to switch between destinations users expect to return to; use sections.'
-        ]
-      },
-      {
-        id: 'results',
-        title: 'Wait for a page to return a result',
-        body: 'push can be awaited. await nav.push(Picker) waits until Picker calls nav.back(value) and returns that value, or None if the page was left another way. Use it in an async def handler, as if you were calling a function that happens to show a screen.',
-        files: [
-          { path: 'src/App.janel', code: `<script lang="python">
-from janelkit import pages
-from pages.Home import Home
-nav = pages(Home)
-</script>
-
-<Window title="Results" width={400} height={240}>
-  <Pages stack={nav} />
-</Window>` },
-          { path: 'src/pages/Home.janel', code: `<script lang="python">
-from janelkit import navigation, state
-from pages.Picker import Picker
-
-nav = navigation()
-chosen = state("nobody")
-
-async def choose():
-    person = await nav.push(Picker)
-    if person is not None:
-        chosen.value = person
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Chosen: {chosen}</Text>
-  <Button on:click={choose}>Choose a person</Button>
-</Column>` },
-          { path: 'src/pages/Picker.janel', code: `<script lang="python">
-from janelkit import navigation
-nav = navigation()
-</script>
-
-<Column padding={24} gap={8}>
-  <Text>Pick one</Text>
-  <Button on:click={nav.back("Ada")}>Ada</Button>
-  <Button on:click={nav.back("Grace")}>Grace</Button>
-</Column>` }
-        ],
-        expected: 'Chosen: nobody at first. Choose a person shows the picker; clicking Grace returns to Home with Chosen: Grace.'
-      },
-      {
-        id: 'sections',
-        title: 'Sections: destinations that keep their place',
-        body: 'sections(name=Component, …) creates one stack per destination; <Sections of={areas} /> shows the current one. areas.show("people") switches without discarding anything: each section keeps its pages and their state. A section is created the first time it is shown. areas.current is reactive, areas.names lists the names, and inside a section navigation() returns that section’s stack.',
-        files: [
-          { path: 'src/App.janel', code: `<script lang="python">
-from janelkit import sections
-from pages.Home import Home
-
-areas = sections(projects=Home, people=Home)
-</script>
-
-<Window title="Sections" width={480} height={300}>
-  <Column>
-    <Row gap={8} padding={8}>
-      <Button on:click={areas.show("projects")}>Projects</Button>
-      <Button on:click={areas.show("people")}>People</Button>
-      <Text>Now in {areas.current}</Text>
-    </Row>
-    <Sections of={areas} />
-  </Column>
-</Window>` },
-          { path: 'src/pages/Home.janel', code: `<script lang="python">
-from janelkit import navigation
-from pages.Detail import Detail
-nav = navigation()
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Home page</Text>
-  <Button on:click={nav.push(Detail)}>Open detail</Button>
-</Column>` },
-          { path: 'src/pages/Detail.janel', code: `<script lang="python">
-from janelkit import navigation
-nav = navigation()
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Detail page</Text>
-  <Button on:click={nav.pop()}>Back</Button>
-</Column>` }
-        ],
-        expected: 'Open detail in Projects, switch to People: People shows its own Home page. Switch back: Projects is still on the detail page.',
-        pitfalls: [
-          'Switching sections never asks before_leave, because nothing is discarded.'
-        ]
-      },
-      {
-        id: 'before-leave',
-        title: 'Ask before leaving a page',
-        body: 'before_leave(fn) registers a question in a page or any component inside it. When the page is about to be discarded (pop, back, replace, reset, Alt+Left) or its window is closed with the X, fn is called; returning False keeps the user where they are. fn can be async, for example to show a confirmation dialog.\n\npop, back, replace and reset can be awaited: they return True if the page was left and False if a guard refused.',
-        files: [
-          { path: 'src/App.janel', code: `<script lang="python">
-from janelkit import pages
-from pages.Home import Home
-nav = pages(Home)
-</script>
-
-<Window title="Guards" width={420} height={260}>
-  <Pages stack={nav} />
-</Window>` },
-          { path: 'src/pages/Home.janel', code: `<script lang="python">
-from janelkit import navigation
-from pages.Editor import Editor
-nav = navigation()
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Home page</Text>
-  <Button on:click={nav.push(Editor)}>Edit</Button>
-</Column>` },
-          { path: 'src/pages/Editor.janel', code: `<script lang="python">
-from janelkit import navigation, state, before_leave
-
-nav = navigation()
-unsaved = state(True)
-status = state("You have unsaved changes.")
-
-@before_leave
-def may_leave():
-    return not unsaved.value
-
-async def go_back():
-    if not await nav.pop():
-        status.value = "Leaving was refused: discard or save first."
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>{status}</Text>
-  <Button on:click={go_back}>Back</Button>
-  <Button on:click={unsaved = False}>Discard changes</Button>
-</Column>` }
-        ],
-        explanation: [
-          'may_leave returns False while there are unsaved changes, so the first Back is refused.',
-          'await nav.pop() returns False in that case, and the editor explains why.',
-          'After Discard changes the guard returns True, and Back leaves.'
-        ],
-        expected: 'Edit, then Back: the editor stays and says Leaving was refused. Discard changes, then Back: Home page appears.',
-        pitfalls: [
-          'Closing a window from code with close() does not ask. Only user navigation and the X do.',
-          'A guard is not a cleanup: if it refuses, the page must keep working. Release resources in on_destroy.'
-        ]
-      },
-      {
-        id: 'windows',
+        id: 'open-window',
         title: 'Open another window',
-        body: 'open_window(Component, **props) opens an imported component in its own window. Keyword arguments are its props and on_name arguments its events; modal=True blocks the opener while it is open, and theme="dark" gives it its own theme. The window inherits context from the component that opens it, and closes on its own when that component is destroyed.\n\nopen_window returns a handle with a reactive is_open, close(), focus() and instance. Each call opens a new window: keep the handle if you want to reuse one.',
+        body: 'open_window(Component, **props) opens an imported component in its own window. Keyword arguments are its props and on_name arguments its events, as in a template: on_saved=accept listens to saved = event(). A state passed as a prop stays reactive in the new window, and an unknown prop is a TypeError that lists the ones available.\n\nmodal=True blocks the window that opened it while it is open, and theme="dark" gives it its own theme without changing the application’s. The new window inherits context (inject) from the component that opens it, stays in front of its window, and closes on its own when that component is destroyed. Closing the main window closes the windows it opened.',
         files: [
-          { path: 'src/components/Settings.janel', code: `<Window title="Settings" width={360} height={220}>
-  <Column padding={24}>
-    <Text>Settings window</Text>
-  </Column>
-</Window>` },
+          { path: 'src/components/Settings.janel', code: `<window title="Settings" width={360} height={220}>
+  <column padding={24}>
+    <text>Settings window</text>
+  </column>
+</window>` },
           { path: 'src/App.janel', code: `<script lang="python">
 from janelkit import open_window, state
 from components.Settings import Settings
@@ -889,19 +663,91 @@ def open_settings():
     window.value = open_window(Settings, modal=True, theme="dark")
 </script>
 
-<Window title="Main" width={380} height={200}>
-  <Column padding={24} gap={12}>
-    <Button on:click={open_settings}>Open settings</Button>
-  </Column>
-</Window>` }
+<window title="Main" width={380} height={200}>
+  <column padding={24} gap={12}>
+    <button on:click={open_settings}>Open settings</button>
+  </column>
+</window>` }
+        ],
+        explanation: [
+          'Settings is an ordinary component. Its <window> root sets the title and size of its own window.',
+          'open_window returns a handle with a reactive is_open, close(), focus() and instance (the component’s namespace).',
+          'Each call opens a new window unless you ask for single=True, described next.'
         ],
         expected: 'Open settings shows a separate dark window; while it is open, the main window does not respond. Closing it returns control to the main window.'
+      },
+      {
+        id: 'single',
+        title: 'One window of each kind',
+        body: 'Settings, About or a log viewer should open once. open_window(Settings, single=True) checks whether a window of that component is already open: if it is, it brings it to the front and returns it instead of opening another. The props of the second call are not applied. This is what a menu item or a shortcut needs, because the user may press it twice.',
+        language: 'python',
+        code: `# In the main component's script.
+from janelkit import open_window
+from components.About import About
+
+def show_about():
+    open_window(About, single=True)   # a second call focuses the open window`,
+        pitfalls: [
+          'single=True compares components, not props: opening Document for two different files with single=True shows the first one twice. Keep it for windows that exist once.'
+        ]
+      },
+      {
+        id: 'screens',
+        title: 'Choose the screen, and go full screen',
+        body: 'screens is the reactive list of connected screens. Each Screen has index, name, width, height, x and y (logical pixels of the virtual desktop), primary and scale (physical pixels per logical pixel). It changes by itself when a screen is connected or disconnected, when the primary one changes or when a resolution changes, so a template that reads it stays up to date.\n\n<window screen={i}> opens the window on that screen, by index or by name, and fullscreen={True} shows it full screen. Both follow state: changing screen while full screen leaves full screen, moves the window and enters again. If the screen does not exist, the window stays where it is.',
+        language: 'janel', standalone: true,
+        code: `<script lang="python">
+from janelkit import state, screens
+
+target = state(0)
+presenting = state(False)
+</script>
+
+<window title="Presenter" width={480} height={320} screen={target} fullscreen={presenting}>
+  <column padding={24} gap={12}>
+    <text>{len(screens)} screen(s) connected</text>
+    {#each screens as s (s.index)}
+      <button on:click={target = s.index}>{s.name}: {s.width} × {s.height}{" (primary)" if s.primary else ""}</button>
+    {/each}
+    <switch bind:checked={presenting}>Full screen</switch>
+  </column>
+</window>`,
+        explanation: [
+          'screens is unwrapped in the template like a state, so {#each screens} lists the Screen objects.',
+          'Each button moves the window to that screen by setting target.',
+          'The switch writes presenting, and fullscreen follows it.'
+        ],
+        expected: 'The window lists every connected screen with its size. Clicking one moves the window there; turning on Full screen fills that screen, and turning it off restores the window.',
+        pitfalls: [
+          'screens is empty until the application starts, so read it in the template or after mounting, not at import time.',
+          'Index 0 is not always the primary screen. Use s.primary, or a screen’s name, when it matters which one you get.'
+        ]
+      },
+      {
+        id: 'before-leave',
+        title: 'Ask before a window closes',
+        body: 'before_leave(fn) registers a question in the script of a component. When the user closes the window that shows it with the X, fn is called; if it returns False, the window stays open. fn can be async, for example to ask with a confirmation dialog. Closing the main window also asks the windows it opened.\n\nClosing from code with handle.close() does not ask: your code already decided. The same before_leave is also asked by a host that is about to discard the component, such as a page of janelkit-router when the user goes back.',
+        language: 'python',
+        code: `# In the script of an editor component.
+from janelkit import state, before_leave
+
+unsaved = state(False)
+
+@before_leave
+def may_close():
+    return not unsaved.value     # False keeps the window open`,
+        pitfalls: [
+          'A guard is not a cleanup: when it refuses, the window must keep working. Release resources in on_destroy.',
+          'Keep the question quick and honest. A guard that always returns False traps the user.'
+        ],
+        see: ['router-leaving', 'lifecycle']
       }
     ],
     summary: [
-      'Stacks give Back; sections keep separate journeys; open_window opens real windows.',
-      'Await push to receive a result; await pop and friends to know whether the page was left.',
-      'before_leave can refuse user navigation; it is not a cleanup hook.'
+      'open_window opens a component in its own window; props and on_ events work as in templates.',
+      'single=True reuses an open window; modal=True blocks its opener.',
+      'screens lists the screens; <window screen fullscreen> places the window and follows state.',
+      'before_leave asks before the user closes a window with the X.'
     ]
   },
   {
@@ -953,10 +799,10 @@ async def save():
         busy.value = False
 </script>
 
-<Column padding={24} gap={12}>
-  <Button enabled={not busy} on:click={save}>Save</Button>
-  <Text>{message}</Text>
-</Column>`,
+<column padding={24} gap={12}>
+  <button enabled={not busy} on:click={save}>Save</button>
+  <text>{message}</text>
+</column>`,
         explanation: [
           'busy disables the button while a save is in progress, so it cannot start twice.',
           'While save is waiting, the window keeps responding.',
@@ -983,20 +829,20 @@ async def lookup(text):
     return "Hello, " + text.strip()
 </script>
 
-<Column padding={24} gap={12}>
-  <TextField bind:value={query} label="Name" />
-  <Row gap={8}>
-    <Button on:click={lookup.run(query)}>Look up</Button>
-    <Button on:click={lookup.cancel()}>Cancel</Button>
-  </Row>
+<column padding={24} gap={12}>
+  <textfield bind:value={query} label="Name" />
+  <row gap={8}>
+    <button on:click={lookup.run(query)}>Look up</button>
+    <button on:click={lookup.cancel()}>Cancel</button>
+  </row>
   {#if lookup.loading}
-    <Text>Loading…</Text>
+    <text>Loading…</text>
   {:else if lookup.error is not None}
-    <Text>Error: {lookup.error}</Text>
+    <text>Error: {lookup.error}</text>
   {:else}
-    <Text>{lookup.value or "No result yet"}</Text>
+    <text>{lookup.value or "No result yet"}</text>
   {/if}
-</Column>`,
+</column>`,
         explanation: [
           'lookup.run(query) starts a run with the current text; the {#if} chain shows its state.',
           'Raising an exception is the normal way to report a failure: it ends up in lookup.error.',
@@ -1024,11 +870,11 @@ async def formatted(text):
     return await background(slow_upper, text)
 </script>
 
-<Column padding={24} gap={12}>
-  <TextField bind:value={name} label="Name" />
-  <Button on:click={formatted.run(name)}>Format</Button>
-  <Text>{"Working…" if formatted.loading else formatted.value or ""}</Text>
-</Column>`,
+<column padding={24} gap={12}>
+  <textfield bind:value={name} label="Name" />
+  <button on:click={formatted.run(name)}>Format</button>
+  <text>{"Working…" if formatted.loading else formatted.value or ""}</text>
+</column>`,
         explanation: [
           'slow_upper knows nothing about JanelKit: it receives a string and returns a string.',
           'background runs it in a worker, so the window keeps responding during the sleep.',
@@ -1069,7 +915,7 @@ def start():
     spawn(load())
 </script>
 
-<Text>{message}</Text>`,
+<text>{message}</text>`,
         expected: 'Loading… appears first and changes to Ready.',
         pitfalls: [
           'Create long-lived tasks and timers during setup. Work created after an await is not automatically owned by the component.'
@@ -1078,7 +924,7 @@ def start():
       {
         id: 'testing',
         title: 'Test the waiting',
-        body: 'In tests, app.wait(seconds, until=condition) runs the event loop until the condition holds or the time runs out. A plain time.sleep in a test would block the very loop that should finish the work. Test the success path, the error path and cancellation separately.',
+        body: 'In tests, app.wait(until=condition, timeout=2) runs the event loop until the condition holds, and fails with InspectError if the timeout passes first; app.wait(seconds) just runs it for that long. A plain time.sleep in a test would block the very loop that should finish the work. Test the success path, the error path and cancellation separately.',
         language: 'python',
         code: `# tests/test_lookup.py, for the @task example above saved as src/App.janel
 from janelkit.inspect import mount
@@ -1088,7 +934,7 @@ def test_lookup():
         lookup = app.get("lookup")
         app.find(text="Look up").click()
         assert lookup.loading
-        app.wait(2, until=lambda: not lookup.loading)
+        app.wait(until=lambda: not lookup.loading, timeout=2)
         assert lookup.value == "Hello, Ada"`,
         see: ['testing', 'timers']
       }
@@ -1102,11 +948,12 @@ def test_lookup():
   {
     slug: 'timers',
     title: 'Timers',
-    description: 'Repeat work with interval, delay it with timeout, debounce input, and know when timers stop.',
+    description: 'Repeat work with interval, delay it with timeout, debounce input, pause a timer while nobody sees it, and know when timers stop.',
     learn: [
       'How interval repeats a function and timeout runs one later.',
       'How to stop, restart and change a timer.',
       'How to debounce typing with timeout.restart.',
+      'How when= and is_visible() pause a timer while its component is not seen.',
       'When timers stop on their own and when you must stop them.'
     ],
     sections: [
@@ -1125,14 +972,14 @@ def clock():
     ticks.value += 1
 </script>
 
-<Column padding={24} gap={12}>
-  <Text>Ticks: {ticks}</Text>
-  <Text>Running: {clock.active}</Text>
-  <Row gap={8}>
-    <Button on:click={clock.stop()}>Stop</Button>
-    <Button on:click={clock.restart()}>Restart</Button>
-  </Row>
-</Column>`,
+<column padding={24} gap={12}>
+  <text>Ticks: {ticks}</text>
+  <text>Running: {clock.active}</text>
+  <row gap={8}>
+    <button on:click={clock.stop()}>Stop</button>
+    <button on:click={clock.restart()}>Restart</button>
+  </row>
+</column>`,
         explanation: [
           '@interval(1000) turns clock into a Timer that calls the function every second.',
           'clock.active is reactive, so Running follows Stop and Restart.',
@@ -1158,10 +1005,10 @@ debounce = timeout(400, search)
 debounce.stop()        # do not search until the user types
 </script>
 
-<Column padding={24} gap={12}>
-  <TextField bind:value={query} on:input={debounce.restart()} label="Search" />
-  <Text>Searched for: {searched}</Text>
-</Column>`,
+<column padding={24} gap={12}>
+  <textfield bind:value={query} on:input={debounce.restart()} label="Search" />
+  <text>Searched for: {searched}</text>
+</column>`,
         explanation: [
           'timeout starts counting at creation; stop() waits for the first keystroke instead.',
           'Every keystroke calls restart(), so the search runs 400 ms after the last one, not after each.',
@@ -1172,7 +1019,7 @@ debounce.stop()        # do not search until the user types
       {
         id: 'async-ticks',
         title: 'Async callbacks skip, they do not pile up',
-        body: 'A timer’s function can be async def, for example to fetch data with background. If a tick is still running when the next one is due, the next one is skipped instead of starting in parallel. An error in the function is logged with its name, and the timer keeps going.',
+        body: 'A timer’s function can be async def, for example to fetch data with background. If a tick is still running when the next one is due, the next one is skipped instead of starting in parallel. An error in the function is logged with its name, and the timer keeps going.\n\nThe timer measures itself: runs counts the completed runs, skipped the ticks skipped because the previous run was still going, and last_duration is the duration in seconds of the last complete run, async part included. They are not reactive; read them to find out whether a cycle fits in its period. If skipped keeps growing, it does not.',
         language: 'python',
         code: `# In a component script; read_processes is a blocking function of yours.
 from janelkit import state, interval, background
@@ -1184,13 +1031,36 @@ async def refresh():
     processes.value = await background(read_processes)`
       },
       {
+        id: 'when',
+        title: 'Count only while it matters: when=',
+        body: 'A component that is not seen still runs its timers: inside {#hidden}, in a list row scrolled out of view, or on a page or section of janelkit-router that is not shown. To avoid work nobody sees, pass a condition: interval(ms, fn, when=condition), and the same for timeout. The condition can be a state, a computed, is_visible() or a function that reads them, such as lambda: visible.value and camera.ready.value. While it is false the timer does not count; when it becomes true again, it counts from zero. stop() wins over when=: a timer stopped by hand does not start again by itself.\n\nis_visible() returns a computed that says whether the component is seen. It is False in a covered page, in a section that is not the current one, inside a {#hidden} that hides it and in a <list> row out of view. The root of a window is always seen; minimizing does not count. Call it in the script, like on_mount.',
+        language: 'python',
+        code: `# In a component script; read_cpu is a function of yours.
+from janelkit import state, interval, is_visible
+
+cpu = state(0.0)
+visible = is_visible()
+
+@interval(250, when=visible)
+def sample():
+    cpu.value = read_cpu()`,
+        explanation: [
+          'visible is a computed, so the timer follows it without any code of yours.',
+          'The same visible can drive an effect, for example to release a camera while the view is hidden.'
+        ],
+        pitfalls: [
+          'when= pauses the timer, not the rest of the script. An effect that saves data keeps running while hidden, which is usually what you want.'
+        ],
+        see: ['real-time']
+      },
+      {
         id: 'ownership',
         title: 'When timers stop',
-        body: 'A timer created in a component stops when the component is destroyed. A timer created in an ordinary module, outside any component, runs until you call stop(). Timers need the application’s event loop: they do not tick during a blocking function, and they do not tick in a plain Python script without the application running.',
+        body: 'A timer created in a component stops when the component is destroyed, also when it was created after an await in a handler or a task. A timer created in an ordinary module, outside any component, runs until you call stop(); JanelKit keeps it alive even if you do not keep a reference. Timers need the application’s event loop: they do not tick during a blocking function, and they do not tick in a plain Python script without the application running.',
         pitfalls: [
           'Do not write a while loop with time.sleep to repeat work; it freezes the window. Use interval.',
           'stop() prevents future ticks; it does not cancel an async tick that is already running.',
-          'A timer inside {#hidden} or on a covered page keeps running. Stop it yourself if it should pause.'
+          'A timer inside {#hidden}, in a list row out of view or on a covered page keeps running. Give it when=is_visible() if it should pause.'
         ],
         see: ['lifecycle', 'async']
       }
@@ -1198,121 +1068,7 @@ async def refresh():
     summary: [
       'interval repeats, timeout runs once; both start when created and return a Timer.',
       'stop, start and restart control them; active is reactive.',
-      'restart on each keystroke debounces input; component timers stop with the component.'
-    ]
-  },
-  {
-    slug: 'persistence',
-    title: 'Saving data and undo',
-    description: 'Remember small values between launches with persisted, and let users undo and redo their changes with History.',
-    learn: [
-      'How persisted saves a value automatically between launches.',
-      'Which values can be saved, where they are stored and when.',
-      'How History records undoable steps and tracks unsaved changes.'
-    ],
-    sections: [
-      {
-        id: 'persisted',
-        title: 'persisted: state that survives a restart',
-        body: 'persisted(key, initial) works like state, with one difference: it is saved. When created, it loads the saved value, or uses initial if there is none. Every change, including changes inside lists and dictionaries, is saved automatically. Use it for preferences and small data: the theme, the last open section, recent files.\n\nThe key belongs to the whole application: two persisted("prefs.theme", …) calls in different files return the same object, and the second default is ignored.',
-        language: 'janel', standalone: true,
-        code: `<script lang="python">
-from janelkit import persisted
-
-name = persisted("lesson.name", "")
-</script>
-
-<Column padding={24} gap={12}>
-  <TextField bind:value={name} placeholder="Your name" label="Your name" />
-  <Text>Hello, {name or "visitor"}.</Text>
-  <Button on:click={name = ""}>Forget my name</Button>
-</Column>`,
-        explanation: [
-          'name behaves like state: bind:, .value and plain names in the template all work.',
-          'Typing saves the value; there is no save button and no file to manage.',
-          'Forget my name saves an empty string; it does not delete the key.'
-        ],
-        expected: 'Typing Ada shows Hello, Ada. Closing and reopening the application shows Ada in the field again.',
-        pitfalls: [
-          'Do not store secrets: values are plain JSON files, not encrypted storage.',
-          'Do not reuse a key for different kinds of data; the first value loaded wins.'
-        ]
-      },
-      {
-        id: 'prefs-module',
-        title: 'Keep preferences together in one module',
-        body: 'Gather persisted values in a module such as src/services/prefs.py, and import them where needed. bind:value={prefs.theme} binds to the module’s value. To show it in a template without .value, import it by name: from services.prefs import theme. Templates unwrap names, not attributes.',
-        language: 'python',
-        code: `# src/services/prefs.py
-from janelkit import persisted
-
-theme = persisted("prefs.theme", "light")
-recent = persisted("prefs.recent", [])
-
-def opened(path):
-    recent.value.insert(0, str(path))   # changes in place are saved too
-    del recent.value[10:]`
-      },
-      {
-        id: 'json-and-keys',
-        title: 'What can be saved, and how keys are written',
-        body: 'Only JSON values: strings, numbers, booleans, None, lists and dictionaries. A value JSON cannot represent, such as a date, a set or your own object, raises TypeError when created or assigned. Some values are converted silently instead: tuples come back as lists, and dictionary keys come back as strings, so {1: "a"} is {"1": "a"} after a restart. Convert dates and paths to strings yourself, and use string keys. When you change the shape of saved data, migrate it yourself or use a new key.\n\nKeys use ASCII letters, digits, dots, underscores and hyphens, and start with a letter or digit. Use dots to group them: prefs.theme, editor.font_size.'
-      },
-      {
-        id: 'where-and-when',
-        title: 'Where and when it is written',
-        body: 'Each key is a file named <key>.json in the user’s data folder plus the project name: %APPDATA%\\<project> on Windows, ~/Library/Application Support/<project> on macOS, ~/.config/<project> on Linux. The environment variable JANELKIT_DATA_DIR changes the folder.\n\nChanges are grouped and written at most every 300 ms, and once more when the application closes. Writing replaces the file in one step, so a crash never leaves half a file. Each change rewrites the whole key, which is why persisted is for small values; documents and databases belong in their own files.',
-        pitfalls: [
-          'Tests with janelkit.inspect.mount use an empty temporary folder, so they never touch real data. To test that a value survives two mounts, set JANELKIT_DATA_DIR.'
-        ]
-      },
-      {
-        id: 'history',
-        title: 'History: undo and redo',
-        body: 'History records changes in named steps. Everything that changes inside with history.step(label): is recorded: each state assigned and each reactive list, dictionary or set modified. undo() returns them to how they were before the step; redo() reapplies it. Changes outside a step are not recorded, so keep things like the selection or the cursor out of it.',
-        language: 'janel', standalone: true,
-        code: `<script lang="python">
-from janelkit import History, state
-
-count = state(0)
-history = History(limit=100)
-
-def add():
-    with history.step("Add one"):
-        count.value += 1
-</script>
-
-<Column padding={24} gap={12}>
-  <Text>Count: {count} · unsaved: {history.modified}</Text>
-  <Row gap={8}>
-    <Button on:click={add}>Add one</Button>
-    <Button enabled={history.can_undo} on:click={history.undo()}>Undo</Button>
-    <Button enabled={history.can_redo} on:click={history.redo()}>Redo</Button>
-  </Row>
-  <Shortcut keys="Ctrl+Z" on:activate={history.undo()} />
-</Column>`,
-        explanation: [
-          'Each Add one is one step named "Add one".',
-          'can_undo, can_redo and modified are reactive, so the buttons and the text follow.',
-          'Ctrl+Z calls the same undo() as the button.'
-        ],
-        expected: 'Add one shows Count: 1 · unsaved: True. Undo returns to Count: 0 · unsaved: False; Redo goes back to 1.'
-      },
-      {
-        id: 'history-details',
-        title: 'Saved markers, limits and custom actions',
-        body: 'mark_saved() marks the current position as saved: modified becomes False there, and also when undo or redo returns to it. It does not write any file. clear() forgets all steps, for example after opening another document. A new step discards whatever could be redone, and limit keeps only the most recent steps. Nested steps merge into one, and a step that changes nothing is not recorded.\n\nFor changes History cannot see, such as a plain dictionary or a file, record what you already did with history.add(label, undo=fn, redo=fn).',
-        pitfalls: [
-          'A step is not a transaction: if the code inside fails, the changes made so far stay.',
-          'Do not hold a step open across await.',
-          'History lives in memory; it does not survive a restart, even if the data it changed is persisted.'
-        ]
-      }
-    ],
-    summary: [
-      'persisted is state that saves itself as JSON; use it for small values.',
-      'Keys are global to the application; values must be JSON.',
-      'History records named steps for undo and redo, and tracks unsaved changes.'
+      'restart on each keystroke debounces input; when= pauses a timer while its component is not seen.'
     ]
   }
 ];

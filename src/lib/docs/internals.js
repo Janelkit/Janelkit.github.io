@@ -40,7 +40,7 @@ export const internalsDocs = [
         title: 'Trace one click through the event loop',
         body: 'An event loop waits for work such as keyboard input, pointer input and timers, then dispatches it to the appropriate code. Qt supplies that loop; JanelKit integrates asynchronous Python work through qasync. A button click reaches the Python handler through the bridge. The handler changes state, and the bindings that read that state become candidates for recalculation. The affected bridge properties notify Qt, which updates the visible result.\n\nChanges made by an event handler are batched, meaning they are grouped instead of treating every assignment as an unrelated interface update. You do not need a manual redraw call. A long blocking function still prevents the interface thread from processing input; automatic reactivity does not turn slow synchronous work into background work.',
         explanation: [
-          'Qt receives the mouse click and finds the Button under the pointer.',
+          'Qt receives the mouse click and finds the <button> under the pointer.',
           'The bridge calls the Python handler connected with on:click.',
           'The handler writes count.value; every binding that read count is marked for recalculation.',
           'When the handler returns, the batch ends: each affected binding is evaluated once in Python.',
@@ -55,11 +55,11 @@ export const internalsDocs = [
       {
         id: 'inspect-pipeline',
         title: 'Inspect one layer at a time',
-        body: 'janel parse shows the parsed tree or the structural errors, with line and column; janel compile shows the generated QML. janel build validates every component of the project and writes the QML to build/qml, but does not produce an executable. You still need to run the application to exercise its behavior.\n\nEach layer catches different mistakes. Parsing checks structure: unclosed tags, misplaced blocks. Compiling also checks meaning: unknown elements, properties and names. Try it: misspell Button as Buton in the counter, run parse, then compile.',
+        body: 'janel parse shows the parsed tree or the structural errors, with line and column; janel compile shows the generated QML. janel build validates every component of the project and writes the QML to build/qml, but does not produce an executable. You still need to run the application to exercise its behavior.\n\nEach layer catches different mistakes. Parsing checks structure: unclosed tags, misplaced blocks. Compiling also checks meaning: unknown elements, properties and names. Try it: misspell <button> as <buton> in the counter, run parse, then compile.',
         language: 'shell', code: `janel parse src/App.janel
 janel compile src/App.janel
 janel build`,
-        expected: 'With Buton, parse still prints the tree, because the structure is valid. compile stops with an error at the exact line and column and suggests <Button>. In version 0.1 diagnostics are written in Spanish: error: elemento desconocido <Buton> … sugerencia: ¿quisiste decir <Button>?',
+        expected: 'With <buton>, parse still prints the tree, because the structure is valid. compile stops with an error at the exact line and column, suggests <button> and lists the built-in elements. Diagnostics are written in Spanish for now: error: elemento desconocido <buton> … sugerencia: ¿quisiste decir <button>?',
         pitfalls: [
           'A successful parse does not mean the file is correct; compile or build checks much more.',
           'Generated QML is machinery, not a file to edit or depend on. Your template is the source.'

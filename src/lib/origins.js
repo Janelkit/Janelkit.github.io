@@ -1,22 +1,34 @@
 // Where a documented feature comes from. Shown as a badge on every page that has one,
-// so readers never confuse built-in controls with optional packages.
+// so readers never confuse what ships with janelkit with what a package adds.
 export const origins = {
   core: {
     package: 'janelkit',
     kind: 'Core',
     summary: 'Included with janelkit. Nothing extra to install.'
   },
+  router: {
+    package: 'janelkit-router',
+    kind: 'Ecosystem package',
+    install: 'pip install janelkit-router',
+    summary: 'Navigation between screens: page stacks that keep their state, parallel sections, results with await and transitions.'
+  },
+  store: {
+    package: 'janelkit-store',
+    kind: 'Ecosystem package',
+    install: 'pip install janelkit-store',
+    summary: 'Shared application data: stores with actions, controlled writes and change tracking, one instance per application, and persistence.'
+  },
   desktop: {
     package: 'janelkit-desktop',
-    kind: 'Optional package',
+    kind: 'Ecosystem package',
     install: 'pip install janelkit-desktop',
-    summary: 'System services: native dialogs, clipboard and notifications. It adds no interface controls.'
+    summary: 'System services: native file and message dialogs, and the clipboard. It adds no interface controls.'
   },
   i18n: {
     package: 'janelkit-i18n',
-    kind: 'Optional package',
+    kind: 'Ecosystem package',
     install: 'pip install janelkit-i18n',
-    summary: 'Translation catalogs, plurals and locale-aware formatting.'
+    summary: 'Translation catalogs, plurals, locale-aware number, currency and date formats, and language switching at run time.'
   },
   vscode: {
     package: 'janelkit-vscode',

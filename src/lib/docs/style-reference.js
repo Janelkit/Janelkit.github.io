@@ -1,17 +1,18 @@
-// Reference · Styles: everything <style> accepts in JanelKit 0.1, and nothing more.
+// Reference · Styles: everything <style> accepts in JanelKit 0.2, and nothing more.
 // Sources (read-only), checked line by line:
 //   packages/janelkit/src/janelkit/styling/compiler.py  (SUPPORTED: properties, values, elements)
 //   packages/janelkit/src/janelkit/styling/parser.py    (selectors, PSEUDO_CLASSES)
 //   packages/janelkit/src/janelkit/styling/theme.py     (tokens)
 //   packages/janelkit/src/janelkit/compiler/cascade.py  (scope and precedence)
 //   packages/janelkit/src/janelkit/compiler/lowering.py (inline style, _INLINE)
-// and a 118-case probe compiled and mounted against JanelKit 0.1.0 (style_probe.py).
+// and a 118-case probe compiled and mounted against JanelKit 0.1.0 (style_probe.py); the
+// unsupported CSS and the known problems were checked again against 0.2.0.0.
 // tests/content.test.js fails if a property, pseudo-class or inline property in the
 // framework is missing from this page.
 const BOXES = 'Boxes';
 const SCROLLS = 'Scroll areas';
 const TEXTS = 'Text controls';
-const ANY = 'Any element except Window';
+const ANY = 'Any element except <window>';
 const EVERY = 'Every element';
 
 export const styleReferenceDocs = [
@@ -38,14 +39,14 @@ export const styleReferenceDocs = [
       {
         id: 'element-groups',
         title: 'Element groups',
-        body: 'The Applies to column of the property tables uses these groups. A property used on an element outside its group produces a warning such as \'box-shadow\' no tiene efecto en <Button> ("has no effect on").',
+        body: 'The Applies to column of the property tables uses these groups. A property used on an element outside its group produces a warning such as \'box-shadow\' no tiene efecto en <button> ("has no effect on").',
         table: { headers: ['Group', 'Elements'], rows: [
-          [BOXES, 'flex, Column, Row'],
-          [SCROLLS, 'Scroll, List'],
-          [TEXTS, 'Text, Button, TextField, TextArea, Checkbox, Switch, Select, RadioGroup, Tabs'],
-          ['Fields', 'Button, TextField, TextArea, Select'],
-          [ANY, 'All built-in elements except Window: the groups above plus Slider, ProgressBar, Image, Video, Spacer, Shortcut, Pages and Sections. Also your own .qml elements.'],
-          [EVERY, 'All of the above and Window.']
+          [BOXES, 'flex, <column>, <row>'],
+          [SCROLLS, '<scroll>, <list>'],
+          [TEXTS, '<text>, <button>, <textfield>, <textarea>, <checkbox>, <switch>, <select>, <radiogroup>, <tabs>'],
+          ['Fields', '<button>, <textfield>, <textarea>, <select>'],
+          [ANY, 'All built-in elements except <window>: the groups above plus <slider>, <progressbar>, <image>, <video>, <spacer>, <shortcut>, and <Pages> and <Sections> of janelkit-router. Also your own .qml elements.'],
+          [EVERY, 'All of the above and <window>.']
         ] }
       },
       {
@@ -54,7 +55,7 @@ export const styleReferenceDocs = [
         body: 'A rule starts with one or more selectors separated by commas. Selectors only see elements written in the same component; see Scope and precedence.',
         table: { headers: ['Selector', 'Example', 'Matches'], rows: [
           ['Class', '.title', 'Elements whose class includes title, from class="…", class:title={…} or class={…}.'],
-          ['Element', 'Button, flex, Column', 'Every element of that type in this component.'],
+          ['Element', 'button, flex, column', 'Every element of that type in this component. Built-in elements only: lowercase, as in the template.'],
           ['Compound', '.button.primary, flex.card', 'Elements that meet every part at once.'],
           ['Pseudo-class', '.row:hover', 'Elements in that state; see the next table.'],
           ['Descendant', '.card .title', 'A .title at any depth inside a .card, also through {#if} and {#each}.'],
@@ -78,7 +79,7 @@ export const styleReferenceDocs = [
           [':focus-visible', 'The element has focus and got it from the keyboard.', 'Boxes only take focus from the keyboard, so on boxes it equals :focus.'],
           [':focus-within', 'The element or something inside it has focus.', ''],
           [':disabled', 'enabled={False}.', ''],
-          [':checked', 'checked is true.', 'Checkbox, Switch, and boxes with a checked attribute.'],
+          [':checked', 'checked is true.', '<checkbox>, <switch>, and boxes with a checked attribute.'],
           [':selected', 'selected is true.', 'Boxes with a selected attribute.'],
           [':expanded', 'expanded is true.', 'Boxes with an expanded attribute.'],
           [':first-child', 'First visible child of its container.', 'Also inside {#each}.'],
@@ -125,11 +126,11 @@ export const styleReferenceDocs = [
       {
         id: 'color-background-border',
         title: 'Color, background and borders',
-        body: 'On a Window, background sets the window color and border does not apply.',
+        body: 'On a <window>, background sets the window color and border does not apply.',
         table: { headers: ['Property', 'Applies to', 'Values and notes'], rows: [
-          ['color', `${TEXTS}; ${BOXES} (inherited by the Text inside)`, 'Color.'],
-          ['background, background-color', `${BOXES}, ${SCROLLS}, Text, Fields, Window`, 'Color. A Text with background, padding and border-radius makes a badge.'],
-          ['border', `${BOXES}, ${SCROLLS}, Text, Fields`, 'Width and color in any order: 1px solid #ccc, 1px var(--border). solid is optional; none or 0 removes it. A color alone means 1px.'],
+          ['color', `${TEXTS}; ${BOXES} (inherited by the <text> inside)`, 'Color.'],
+          ['background, background-color', `${BOXES}, ${SCROLLS}, <text>, Fields, <window>`, 'Color. A <text> with background, padding and border-radius makes a badge.'],
+          ['border', `${BOXES}, ${SCROLLS}, <text>, Fields`, 'Width and color in any order: 1px solid #ccc, 1px var(--border). solid is optional; none or 0 removes it. A color alone means 1px.'],
           ['border-width', 'Same as border', 'Length.'],
           ['border-color', 'Same as border', 'Color.'],
           ['border-radius', 'Same as border', 'One length. Two to four lengths (one per corner, as in CSS) only on Boxes. No percentages.'],
@@ -146,7 +147,7 @@ export const styleReferenceDocs = [
         title: 'Spacing',
         body: 'Padding is the space inside an element, margin the space outside it, and gap the space between the children of a container. Prefer gap on the container over margins on each child.',
         table: { headers: ['Property', 'Applies to', 'Values and notes'], rows: [
-          ['padding', `${BOXES}, ${SCROLLS}, ${TEXTS}`, 'One to four lengths, as in CSS. On Scroll and List it pads the content inside.'],
+          ['padding', `${BOXES}, ${SCROLLS}, ${TEXTS}`, 'One to four lengths, as in CSS. On <scroll> and <list> it pads the content inside.'],
           ['padding-top, padding-right, padding-bottom, padding-left', 'Same as padding', 'Length.'],
           ['margin', ANY, 'One to four values: lengths, negative lengths or auto. auto pushes the element (margin-left: auto). Margins never collapse.'],
           ['margin-top, margin-right, margin-bottom, margin-left', ANY, 'Length or auto.'],
@@ -157,12 +158,12 @@ export const styleReferenceDocs = [
       {
         id: 'flex-layout',
         title: 'Flex layout',
-        body: 'Layout follows a subset of CSS flexbox. flex uses the web defaults (row, align-items: stretch, children shrink); Column and Row are shortcuts with their own defaults. The Layout chapter explains how they behave.',
+        body: 'Layout follows a subset of CSS flexbox. flex uses the web defaults (row, align-items: stretch, children shrink); <column> and <row> are shortcuts with their own defaults. The Layout chapter explains how they behave.',
         table: { headers: ['Property', 'Applies to', 'Values and notes'], rows: [
           ['flex-direction, direction', 'flex', 'row (default), column, row-reverse, column-reverse.'],
           ['flex-wrap', BOXES, 'nowrap, wrap.'],
-          ['align-items', `${BOXES}, Scroll`, 'start, center, end, stretch; baseline only on Boxes. flex-start and flex-end are accepted as start and end.'],
-          ['justify-content', `${BOXES}, Scroll`, 'start, center, end, space-between, space-around, space-evenly.'],
+          ['align-items', `${BOXES}, <scroll>`, 'start, center, end, stretch; baseline only on Boxes. flex-start and flex-end are accepted as start and end.'],
+          ['justify-content', `${BOXES}, <scroll>`, 'start, center, end, space-between, space-around, space-evenly.'],
           ['align-content', BOXES, 'The justify-content values plus stretch: distributes wrapped lines.'],
           ['align-self', ANY, 'auto, start, center, end, stretch.'],
           ['flex', ANY, '1 (= 1 1 0), 1 0 200px (grow, shrink, basis), auto (= 1 1 auto), none (= 0 0 auto). Grow must be a whole number.'],
@@ -177,9 +178,9 @@ export const styleReferenceDocs = [
       {
         id: 'sizing',
         title: 'Size',
-        body: 'Without a size, an element takes its natural size, and in a Column, text, fields and boxes stretch to the full width. Set a size only when the layout needs one.',
+        body: 'Without a size, an element takes its natural size, and in a <column>, text, fields and boxes stretch to the full width. Set a size only when the layout needs one.',
         table: { headers: ['Property', 'Applies to', 'Values and notes'], rows: [
-          ['width, height', EVERY, 'Length; percentage of the container; 100% fills the available space; auto and fit-content keep the natural size. On a Window, a length only.'],
+          ['width, height', EVERY, 'Length; percentage of the container; 100% fills the available space; auto and fit-content keep the natural size. On a <window>, a length only.'],
           ['min-width, max-width, min-height, max-height', EVERY, 'Length only, no percentages.']
         ] }
       },
@@ -203,25 +204,25 @@ export const styleReferenceDocs = [
       {
         id: 'typography',
         title: 'Text',
-        body: 'Properties set on a box are inherited by the Text elements inside it; see Inherited text. On a Window, font properties apply to the whole window.',
+        body: 'Properties set on a box are inherited by the <text> elements inside it; see Inherited text. On a <window>, font properties apply to the whole window.',
         table: { headers: ['Property', 'Applies to', 'Values and notes'], rows: [
-          ['font-size', `${TEXTS}, ${BOXES}, Window`, 'Length.'],
-          ['font-weight', `${TEXTS}, ${BOXES}, Window`, '1 to 1000, normal (400), bold (700), lighter (300), bolder (800). lighter and bolder are fixed weights, not relative to the parent.'],
-          ['font-family', `${TEXTS}, ${BOXES}, Window`, 'One family name, quoted or not, or a token such as var(--font-family). No fallback list.'],
-          ['font-style', `${TEXTS}, ${BOXES}, Window`, 'italic, normal.'],
+          ['font-size', `${TEXTS}, ${BOXES}, <window>`, 'Length.'],
+          ['font-weight', `${TEXTS}, ${BOXES}, <window>`, '1 to 1000, normal (400), bold (700), lighter (300), bolder (800). lighter and bolder are fixed weights, not relative to the parent.'],
+          ['font-family', `${TEXTS}, ${BOXES}, <window>`, 'One family name, quoted or not, or a token such as var(--font-family). No fallback list.'],
+          ['font-style', `${TEXTS}, ${BOXES}, <window>`, 'italic, normal.'],
           ['letter-spacing', `${TEXTS}, ${BOXES}`, 'Length.'],
           ['text-transform', `${TEXTS}, ${BOXES}`, 'none, uppercase, lowercase, capitalize.'],
-          ['text-align', `Text, TextField, TextArea, ${BOXES}`, 'left, center, right, justify.'],
-          ['line-height', `Text, ${BOXES}`, 'Unitless factor, such as 1.4. Lengths are rejected.'],
-          ['white-space', `Text, ${BOXES}`, 'normal, nowrap (one line). pre-wrap is accepted and behaves like normal.'],
-          ['text-overflow', `Text, ${BOXES}`, 'ellipsis, clip.'],
-          ['user-select', 'Text', 'text (the text can be selected and copied), auto, none.']
+          ['text-align', `<text>, <textfield>, <textarea>, ${BOXES}`, 'left, center, right, justify.'],
+          ['line-height', `<text>, ${BOXES}`, 'Unitless factor, such as 1.4. Lengths are rejected.'],
+          ['white-space', `<text>, ${BOXES}`, 'normal, nowrap (one line). pre-wrap is accepted and behaves like normal.'],
+          ['text-overflow', `<text>, ${BOXES}`, 'ellipsis, clip.'],
+          ['user-select', '<text>', 'text (the text can be selected and copied), auto, none.']
         ] }
       },
       {
         id: 'effects',
         title: 'Effects and interaction',
-        body: 'These properties change how an element looks or reacts without changing the layout. Most of them only exist on Boxes, so wrap a control in a Column to give it a shadow or an outline.',
+        body: 'These properties change how an element looks or reacts without changing the layout. Most of them only exist on Boxes, so wrap a control in a <column> to give it a shadow or an outline.',
         table: { headers: ['Property', 'Applies to', 'Values and notes'], rows: [
           ['opacity', EVERY, 'Number from 0 to 1, written 0.5.'],
           ['transform', ANY, 'scale(n), rotate(45deg), translate(x, y), translateX(x), translateY(y), none, combined with spaces. Always from the center; it does not affect layout. Replaces the whole transform, as in CSS.'],
@@ -241,7 +242,7 @@ export const styleReferenceDocs = [
       {
         id: 'inherited-text',
         title: 'Inherited text',
-        body: 'color, font-family, font-size, font-weight, font-style, letter-spacing, text-transform, text-align, line-height, white-space and text-overflow set on a box are inherited by every Text inside it, at any depth, also inside other components and slot content, unless the Text sets its own.\n\nThe text of Qt controls such as Button and TextField does not inherit: style those directly.',
+        body: 'color, font-family, font-size, font-weight, font-style, letter-spacing, text-transform, text-align, line-height, white-space and text-overflow set on a box are inherited by every <text> inside it, at any depth, also inside other components and slot content, unless the <text> sets its own.\n\nThe text of Qt controls such as <button> and <textfield> does not inherit: style those directly.',
         language: 'css',
         code: `/* One rule recolors all the text of the selected row. */
 .row:selected { background: var(--primary); color: var(--on-primary); }`
@@ -256,7 +257,7 @@ export const styleReferenceDocs = [
 .card:hover { --accent: var(--success); }
 .title { color: var(--accent); }`,
         pitfalls: [
-          'Custom properties can only be defined on Boxes (flex, Column, Row). On another element they produce a warning.'
+          'Custom properties can only be defined on Boxes (flex, <column>, <row>). On another element they produce a warning.'
         ]
       },
       {
@@ -302,15 +303,15 @@ theme.define("sepia", base="light", bg="#f4ecd8", text="#433422")`,
       {
         id: 'not-supported',
         title: 'Common CSS that is not supported',
-        body: 'Each item below was compiled against JanelKit 0.1. The Result column says what happens; the last column gives the closest supported way.',
+        body: 'Each item below was compiled against JanelKit 0.2. The Result column says what happens; the last column gives the closest supported way.',
         table: { headers: ['CSS', 'Result', 'Use instead'], rows: [
           ['@media, @keyframes, @font-face, @import, nesting', 'Compile error', 'A computed value with class:x or style={…}; transition for animations.'],
-          ['display (none, grid, flex)', 'Warning', '{#if} or {#hidden} to hide; flex or Column/Row for layout; flex-wrap for grids.'],
+          ['display (none, grid, flex)', 'Warning', '{#if} or {#hidden} to hide; flex or <column>/<row> for layout; flex-wrap for grids.'],
           ['grid-template-*, place-items, justify-items', 'Warning', 'flex-wrap with flex: 1 1 200px on the items.'],
-          ['position: sticky', 'Warning', 'Put the header outside the Scroll.'],
+          ['position: sticky', 'Warning', 'Put the header outside the <scroll>.'],
           ['em, rem, vw, vh, calc(), min(), clamp()', 'Warning', 'Pixels, theme tokens, percentages where allowed, or values computed in Python with style={…}.'],
           ['hsl(), modern rgb() syntax, gradients', 'Warning', 'Hex or rgb()/rgba() with commas.'],
-          ['background-image, url()', 'Warning', '<Image> inside an absolute box.'],
+          ['background-image, url()', 'Warning', '<image> inside an absolute box.'],
           ['text-decoration, text-shadow, word-break', 'Warning', 'No equivalent.'],
           ['font shorthand', 'Warning', 'font-size, font-weight, font-family and font-style separately.'],
           ['border-style, dashed and dotted borders', 'Warning', 'Solid borders only.'],
@@ -318,7 +319,7 @@ theme.define("sepia", base="light", bg="#f4ecd8", text="#433422")`,
           ['filter, backdrop-filter, clip-path, mix-blend-mode', 'Warning', 'No equivalent.'],
           ['transform: skew(), scale(x, y), transform-origin', 'Warning', 'scale(n), rotate(), translate().'],
           ['animation, transition-timing-function, transition-delay', 'Warning for the properties; ignored inside transition', 'transition with a state or class change.'],
-          ['overflow-x, overflow-y', 'Warning', 'overflow on a box, or a Scroll.'],
+          ['overflow-x, overflow-y', 'Warning', 'overflow on a box, or a <scroll>.'],
           ['aspect-ratio, box-sizing', 'Warning', 'Explicit width and height.'],
           ['scrollbar-*', 'Warning', 'No equivalent.'],
           ['!important', 'Warning (invalid value)', 'A more specific selector, or style=.']
@@ -326,7 +327,7 @@ theme.define("sepia", base="light", bg="#f4ecd8", text="#433422")`,
       },
       {
         id: 'known-problems',
-        title: 'Known problems in 0.1',
+        title: 'Known problems in 0.2',
         body: 'These values compile without any warning and janel build accepts them, but the application then fails to start with Qt rechazó el QML generado: Invalid property assignment ("Qt rejected the generated QML"). The error points at the element, so the fix is quick once you know the cause.',
         table: { headers: ['Written', 'What happens', 'Write instead'], rows: [
           ['A misspelled color name: color: blu', 'The application does not start.', 'Check the spelling, or use a hex value or a token.'],
