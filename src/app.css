@@ -12,3 +12,6 @@
 .docs-zones{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid var(--line)}.docs-zones a{font-size:12px;color:var(--muted);padding:9px 8px 10px;border-bottom:2px solid transparent;margin-bottom:-1px}.docs-zones a:hover{color:var(--text)}.docs-zones a.current{color:var(--pink);border-bottom-color:var(--pink)}
 .doc-origin{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border-left:2px solid var(--pink);background:var(--surface);padding:12px 16px;margin:-8px 0 26px;font-size:12px;color:var(--muted);line-height:1.6}.doc-origin .origin-kind{font:10px 'Cascadia Code','Consolas',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--pink)}.doc-origin code{color:var(--text)}.doc-origin .origin-install{background:var(--code-bg);border:1px solid var(--line-strong);padding:3px 8px;border-radius:3px}.doc-origin:not([data-origin="core"]){border-left-color:var(--cyan)}.doc-origin:not([data-origin="core"]) .origin-kind{color:var(--cyan)}
 @media(max-width:760px){.docs-zones a{min-height:44px;display:flex;align-items:center}}
+
+/* Six ecosystem cards: two rows of three on wide screens. */
+@media(min-width:761px){.ecosystem-list>a:nth-child(3n+1){padding-left:0;border-left:0}.ecosystem-list>a:nth-child(n+4){border-top:1px solid var(--line-strong)}}
